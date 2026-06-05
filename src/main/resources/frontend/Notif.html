@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+     <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #202020;
+      font-family: 'Poppins', Arial, sans-serif;
+      color: #111;
+    }
+
+    .page-label {
+      color: #8b8b8b;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 10px 0 10px 30px;
+    }
+
+    .app-wrapper {
+      width: calc(100% - 60px);
+      min-height: 86vh;
+      margin: 0 auto 30px;
+      background: #fff;
+      display: flex;
+      border: 1px solid #f1f1f1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 130px;
+      min-width: 130px;
+      border-right: 2px solid #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+    }
+
+    .sidebar-logo-area {
+      width: 100%;
+      height: 115px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 2px solid #e5e5e5;
+    }
+
+    .logo-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 9px;
+      background: #5b4cf2;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+
+    .nav-icon {
+      width: 60px;
+      height: 60px;
+      border: 1px solid #e6eaf0;
+      border-radius: 8px;
+      color: #8193a2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 31px;
+      margin-top: 36px;
+      background: #fff;
+    }
+
+    .sidebar-divider {
+      width: 100%;
+      border-top: 2px solid #e5e5e5;
+      margin-top: 62px;
+    }
+
+    /* Main area */
+    .main-content {
+      flex: 1;
+      background: #fff;
+    }
+
+    .topbar {
+      height: 115px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 34px 0 30px;
+      border-bottom: 2px solid #e5e5e5;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .bell {
+      font-size: 34px;
+      color: #000;
+    }
+
+    .profile-img,
+    .avatar {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-img {
+      width: 64px;
+      height: 64px;
+      background: #f1f1f1;
+    }
+
+    .notification-list {
+      padding: 30px 54px 60px 30px;
+    }
+
+    .notification-card {
+      min-height: 112px;
+      border: 1.5px solid #9fb2c2;
+      border-radius: 7px;
+      box-shadow: 0 3px 5px rgba(0,0,0,.22);
+      margin-bottom: 20px;
+      padding: 24px 30px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #fff;
+    }
+
+    .notification-card.active {
+      border: 4px solid #0d9aff;
+      box-shadow: 0 3px 6px rgba(0,0,0,.2);
+      padding: 21px 27px;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      flex: 0 0 54px;
+      background: #f1f1f1;
+    }
+
+    .notification-body {
+      padding-top: 3px;
+      width: 100%;
+    }
+
+    .notification-text {
+      font-size: 19px;
+      line-height: 1.35;
+      color: #7b7b7b;
+      margin-bottom: 4px;
+    }
+
+    .notification-text .name,
+    .notification-text .highlight {
+      color: #111;
+    }
+
+    .notification-text .name {
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .time {
+      font-size: 15px;
+      color: #777;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin: 9px 0 8px;
+    }
+
+    .btn-custom {
+      min-width: 96px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 15px;
+      padding: 0 18px;
+    }
+
+    .btn-decline {
+      background: #fff;
+      border: 1px solid #c7c7c7;
+      color: #111;
+    }
+
+    .btn-accept {
+      background: #000;
+      border: 1px solid #000;
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .app-wrapper {
+        width: 100%;
+        margin: 0;
+      }
+
+      .sidebar {
+        width: 90px;
+        min-width: 90px;
+      }
+
+      .notification-list {
+        padding: 24px 18px;
+      }
+
+      .notification-text {
+        font-size: 16px;
+      }
+
+      .top-actions {
+        gap: 22px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        height: 90px;
+        padding: 0 20px;
+      }
+
+      .topbar h1 {
+        font-size: 24px;
+      }
+
+      .profile-img {
+        width: 48px;
+        height: 48px;
+      }
+
+      .bell {
+        font-size: 27px;
+      }
+
+      .notification-card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-label">Notification</div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-logo-area">
+        <div class="logo-box">
+          <i class="bi bi-kanban-fill"></i>
+        </div>
+      </div>
+
+      <div class="nav-icon"><i class="bi bi-grid-fill"></i></div>
+      <div class="nav-icon"><i class="bi bi-file-earmark-arrow-up-fill"></i></div>
+      <div class="nav-icon"><i class="bi bi-calendar"></i></div>
+      <div class="nav-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+
+      <div class="sidebar-divider"></div>
+      <div class="nav-icon"><i class="bi bi-box-arrow-right"></i></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <h1>Notification</h1>
+        <div class="top-actions">
+          <i class="bi bi-bell bell"></i>
+          <img class="profile-img" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+        </div>
+      </header>
+
+      <section class="notification-list">
+        <div class="notification-card">
+          <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+          <div class="notification-body">
+            <div class="notification-text">
+              <span class="name">Larry Luciano</span>
+              Changed the due date of <span class="highlight">Monthly Team Meeting</span> to Sep 12
+            </div>
+            <div class="time">3 Hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification-card">
+          <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+          <div class="notification-body">
+            <div class="notification-text">
+              <span class="name">Larry Luciano</span>
+              Asking for edit access in <span class="highlight">Monthly Team Progress</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn-custom btn-decline">Decline</button>
+              <button class="btn-custom btn-accept">Accept</button>
+            </div>
+            <div class="time">3 Hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification-card">
+          <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+          <div class="notification-body">
+            <div class="notification-text">
+              <span class="name">Larry Luciano</span>
+              Changed the due date of <span class="highlight">Monthly Team Meeting</span> to Sep 12
+            </div>
+            <div class="time">3 Hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification-card active">
+          <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+          <div class="notification-body">
+            <div class="notification-text">
+              <span class="name">Larry Luciano</span>
+              Changed the due date of <span class="highlight">Monthly Team Meeting</span> to Sep 12
+            </div>
+            <div class="time">3 Hours ago</div>
+          </div>
+        </div>
+
+        <div class="notification-card">
+          <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Avatar">
+          <div class="notification-body">
+            <div class="notification-text">
+              <span class="name">Larry Luciano</span>
+              Asking for edit access in <span class="highlight">Monthly Team Progress</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn-custom btn-decline">Decline</button>
+              <button class="btn-custom btn-accept">Accept</button>
+            </div>
+            <div class="time">3 Hours ago</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+</html>
