@@ -1,17 +1,18 @@
 package com.crm.tubes.controller;
-package com.crm.tubes.controller;
 
-import com.crm.tubes.model.Subscription;
-import com.crm.tubes.model.User;
-import com.crm.tubes.service.SubscriptionService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.crm.tubes.model.Subscription;
+import com.crm.tubes.model.User;
+import com.crm.tubes.service.SubscriptionService;
+
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * SubscriptionController = the class that handles HTTP requests.
