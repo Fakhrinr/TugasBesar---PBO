@@ -10,9 +10,12 @@
 
 
 -- Hapus tabel lama kalau ada (urutan penting! child dulu baru parent)
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS notification;
+DROP TABLE IF EXISTS invoice;        -- ← tambah invoice sebelum subscription
 DROP TABLE IF EXISTS subscription;
 DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS staff;
