@@ -10,6 +10,7 @@
 
 
 -- Hapus tabel lama kalau ada (urutan penting! child dulu baru parent)
+set foreign_key_checks = 0;  -- matikan cek FK sementara
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS notification;
