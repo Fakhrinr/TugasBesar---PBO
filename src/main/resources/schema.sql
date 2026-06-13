@@ -225,7 +225,6 @@ INSERT INTO customer (user_id, address, phone) VALUES
 INSERT INTO staff (user_id, employee_id) VALUES
 (1, 'EMP-001'),   -- Admin
 (4, 'EMP-002');   -- Budi CS
-(4, 'EMP-002');   -- Budi CS
 
 -- Sample subscriptions
 INSERT INTO subscription (customer_id, plan_name, start_date, end_date, monthly_fee, status) VALUES
