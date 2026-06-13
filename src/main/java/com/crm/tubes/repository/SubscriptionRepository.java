@@ -28,7 +28,6 @@ public class SubscriptionRepository {
         customer.setPhone(rs.getString("phone"));
         customer.setAddress(rs.getString("address"));
 
-        // Build the Subscription object
         Subscription sub = new Subscription();
         sub.setId(rs.getInt("id"));
         sub.setCustomer(customer);                          // aggregation: set Customer object
@@ -84,13 +83,7 @@ public class SubscriptionRepository {
         return jdbcTemplate.queryForObject(sql, subscriptionRowMapper, id);
     }
 
-    /**
-     * findActiveByCustomerId() — get the ACTIVE subscription for one customer.
-     *
-     * Used for the Customer view — show their own current plan.
-     *
-     * @param customerId the logged-in customer's ID
-     */
+
     public Subscription findActiveByCustomerId(int customerId) {
         String sql = """
                 SELECT
@@ -115,19 +108,8 @@ public class SubscriptionRepository {
         return jdbcTemplate.queryForObject(sql, subscriptionRowMapper, customerId);
     }
 
-    /**
-     * updateStatus() — update the status column of a subscription in DB.
-     *
-     * Called by the Service after checkStatus() decides the new status.
-     *
-     * @param id     the subscription to update
-     * @param status the new status (ACTIVE, GRACE, or SUSPENDED)
-     */
     public void updateStatus(int id, SubscriptionStatus status) {
         String sql = "UPDATE subscription SET status = ? WHERE id = ?";
-
-        // update() runs INSERT / UPDATE / DELETE queries
-        // status.name() converts enum → String e.g. ACTIVE → "ACTIVE"
         jdbcTemplate.update(sql, status.name(), id);
     }
 }
