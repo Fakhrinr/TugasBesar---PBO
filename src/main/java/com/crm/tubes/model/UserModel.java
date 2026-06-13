@@ -1,0 +1,29 @@
+package com.crm.tubes.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserModel {
+
+    private Integer idUser;
+
+    private String name;
+
+    private String email;
+
+    private String password;
+
+    private Role role;
+
+    private Boolean status;
+
+    public enum Role {
+        ADMIN,
+        TEKNISI,
+        CUSTOMER
+    }
+}
