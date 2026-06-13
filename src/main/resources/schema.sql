@@ -32,9 +32,7 @@ CREATE TABLE user (
     password VARCHAR(255) NOT NULL,                    -- disimpan terenkripsi
     role     ENUM(
                 'ADMIN',
-                'CUSTOMER_SERVICE',
                 'TEKNISI',
-                'FINANCE',
                 'CUSTOMER'
              ) NOT NULL,
     status   BOOLEAN      NOT NULL DEFAULT TRUE        -- TRUE = aktif, FALSE = nonaktif
@@ -180,7 +178,8 @@ CREATE TABLE ticket (
     priority     ENUM(
                     'LOW',
                     'MEDIUM',
-                    'HIGH'
+                    'HIGH',
+					'URGENT'
                  ) NOT NULL DEFAULT 'MEDIUM',
     status       ENUM(
                     'OPEN',
@@ -210,7 +209,6 @@ INSERT INTO user (name, email, password, role, status) VALUES
 ('Admin CRM',       'admin@crm.com',    'admin123',   'ADMIN',            TRUE),
 ('Larry Luciano',   'larry@gmail.com',  'larry123',   'CUSTOMER',         TRUE),
 ('Diana Reyes',     'diana@gmail.com',  'diana123',   'CUSTOMER',         TRUE),
-('Budi CS',         'budi@crm.com',     'budi123',    'CUSTOMER_SERVICE', TRUE),
 ('Andi Teknisi',    'andi@crm.com',     'andi123',    'TEKNISI',          TRUE);
 
 -- Sample customers (linked to user)
