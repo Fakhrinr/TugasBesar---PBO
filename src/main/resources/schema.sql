@@ -14,6 +14,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS ticket;
+DROP TABLE IF EXISTS invoice;
 DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS invoice;        -- ← tambah invoice sebelum subscription
 DROP TABLE IF EXISTS subscription;
@@ -222,8 +223,7 @@ INSERT INTO customer (user_id, address, phone) VALUES
 -- Sample staff
 INSERT INTO staff (user_id, employee_id) VALUES
 (1, 'EMP-001'),   -- Admin
-(4, 'EMP-002'),   -- Budi CS
-(5, 'EMP-003');   -- Andi Teknisi
+(4, 'EMP-002');   -- Budi CS
 
 -- Sample subscriptions
 INSERT INTO subscription (customer_id, plan_name, start_date, end_date, monthly_fee, status) VALUES
