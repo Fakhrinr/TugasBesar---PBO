@@ -114,9 +114,25 @@ public class AuthService {
             );
         }
 
-        // ==========================
+        // ==========================================
+        // Integrasi Subscription
+        // ==========================================
+
+        if (user.getRole() == UserModel.Role.CUSTOMER) {
+
+            Integer customerId =
+                    userRepository.findCustomerIdByUserId(
+                            user.getIdUser()
+                    );
+
+            user.setCustomerId(
+                    customerId
+            );
+        }
+
+        // ==========================================
         // Simpan User ke Session
-        // ==========================
+        // ==========================================
 
         session.setAttribute(
                 "loggedUser",
@@ -161,6 +177,7 @@ public class AuthService {
     ) {
 
         if (session != null) {
+
             session.invalidate();
         }
     }
