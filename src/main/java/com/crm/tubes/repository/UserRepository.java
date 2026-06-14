@@ -195,6 +195,25 @@ public class UserRepository {
         );
     }
 
+    public Integer findCustomerIdByUserId(
+        Integer userId
+        ) {
+
+        String sql = """
+            SELECT id
+            FROM customer
+            WHERE user_id = ?
+            """;
+
+        return jdbcTemplate.query(
+            sql,
+            rs -> rs.next()
+                    ? rs.getInt("id")
+                    : null,
+            userId
+        );
+        }
+
     public void updatePassword(
             String email,
             String password

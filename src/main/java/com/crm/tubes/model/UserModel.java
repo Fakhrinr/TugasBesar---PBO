@@ -21,6 +21,8 @@ public class UserModel {
 
     private Boolean status;
 
+    private Integer customerId;
+
     public enum Role {
         ADMIN,
         TEKNISI,

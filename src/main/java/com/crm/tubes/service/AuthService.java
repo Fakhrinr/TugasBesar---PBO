@@ -6,6 +6,7 @@ import com.crm.tubes.model.CustomerModel;
 import com.crm.tubes.model.UserModel;
 import com.crm.tubes.repository.UserRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserRepository userRepository;
+
+    // ==================================================
+    // REGISTER
+    // ==================================================
 
     public RegisterResponse register(
             RegisterRequest request
@@ -72,8 +77,13 @@ public class AuthService {
         );
     }
 
+    // ==================================================
+    // LOGIN
+    // ==================================================
+
     public LoginResponse login(
-            LoginRequest request
+            LoginRequest request,
+            HttpSession session
     ) {
 
         UserModel user =
@@ -104,6 +114,51 @@ public class AuthService {
             );
         }
 
+        // ==========================================
+        // Integrasi Subscription
+        // ==========================================
+
+        if (user.getRole() == UserModel.Role.CUSTOMER) {
+
+            Integer customerId =
+                    userRepository.findCustomerIdByUserId(
+                            user.getIdUser()
+                    );
+
+            user.setCustomerId(
+                    customerId
+            );
+        }
+
+        // ==========================================
+        // Simpan User ke Session
+        // ==========================================
+
+        session.setAttribute(
+                "loggedUser",
+                user
+        );
+
+        session.setAttribute(
+                "loggedUserId",
+                user.getIdUser()
+        );
+
+        session.setAttribute(
+                "loggedUserName",
+                user.getName()
+        );
+
+        session.setAttribute(
+                "loggedUserEmail",
+                user.getEmail()
+        );
+
+        session.setAttribute(
+                "loggedUserRole",
+                user.getRole()
+        );
+
         return new LoginResponse(
                 user.getIdUser(),
                 user.getName(),
@@ -113,15 +168,23 @@ public class AuthService {
         );
     }
 
+    // ==================================================
+    // LOGOUT
+    // ==================================================
+
     public void logout(
-            Integer userId
+            HttpSession session
     ) {
 
-        userRepository.updateStatus(
-                userId,
-                false
-        );
+        if (session != null) {
+
+            session.invalidate();
+        }
     }
+
+    // ==================================================
+    // RESET PASSWORD
+    // ==================================================
 
     public void resetPassword(
             ResetPasswordRequest request

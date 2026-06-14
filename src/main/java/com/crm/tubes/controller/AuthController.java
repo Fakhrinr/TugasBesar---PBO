@@ -1,7 +1,6 @@
 package com.crm.tubes.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.tubes.service.AuthService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,18 +30,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthService.LoginResponse> login(
-            @RequestBody AuthService.LoginRequest request) {
+            @RequestBody AuthService.LoginRequest request,
+            HttpSession session) {
 
         return ResponseEntity.ok(
-                authService.login(request)
+                authService.login(request, session)
         );
     }
 
-    @PostMapping("/logout/{userId}")
+    @PostMapping("/logout")
     public ResponseEntity<String> logout(
-            @PathVariable Integer userId) {
+            HttpSession session) {
 
-        authService.logout(userId);
+        authService.logout(session);
 
         return ResponseEntity.ok(
                 "Logout berhasil"
