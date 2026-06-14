@@ -58,10 +58,7 @@ public class Invoice {
     }
 
     public void checkStatus() {
-
-        if (status != InvoiceStatus.PAID &&
-                LocalDate.now().isAfter(dueDate)) {
-
+        if (status != InvoiceStatus.PAID && LocalDate.now().isAfter(dueDate)) {
             status = InvoiceStatus.OVERDUE;
         }
     }
