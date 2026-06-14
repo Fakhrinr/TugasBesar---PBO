@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subscription – CRM ISP</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"/>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+  <!-- Custom CSS (file terpisah) -->
+  <link rel="stylesheet" th:href="@{/css/subscription.css}"/>
+</head>
+<body>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside class="sidebar">
+  <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
+  <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+  <a th:href="@{/billing}"      class="s-link"        title="Billing">      <i class="bi bi-receipt"></i></a>
+  <a th:href="@{/subscription}" class="s-link active" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+  <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+  <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+  <hr/>
+  <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+</aside>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main-wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-title">Subscription</span>
+    <div class="topbar-right">
+      <div class="topbar-bell">
+        <i class="bi bi-bell"></i>
+        <span class="badge-dot"></span>
+      </div>
+      <!--
+        loggedUser = UserModel dari session Tiara
+        loggedUser.name → nama user yang login
+        Tampilin 2 huruf pertama sebagai avatar
+      -->
+      <div class="avatar"
+           th:text="${#strings.substring(loggedUser.name, 0, 2).toUpperCase()}">AB</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ═══════════════════════════════════════════════
+         CUSTOMER VIEW  (role == CUSTOMER)
+         Model dari SubscriptionController:
+           myPlan    → Subscription (plan aktif customer)
+           myHistory → List<Subscription> (history subscription)
+    ════════════════════════════════════════════════ -->
+    <div th:if="${role != null and role.name() == 'CUSTOMER'}">
+
+      <!-- Card Plan Aktif -->
+      <div th:if="${myPlan != null}" class="plan-card" th:object="${myPlan}">
+
+        <!-- Nama plan + badge status -->
+        <div class="plan-title-row">
+          <span class="plan-name" th:text="*{planName}">Starter Plan</span>
+          <span class="status-badge"
+                th:classappend="${myPlan.status.name() == 'ACTIVE'}    ? 'badge-active'
+                              : (${myPlan.status.name() == 'GRACE'}    ? 'badge-grace'
+                              : 'badge-suspended')">
+            <i class="bi"
+               th:classappend="${myPlan.status.name() == 'ACTIVE'}    ? 'bi-check-circle-fill'
+                             : (${myPlan.status.name() == 'GRACE'}    ? 'bi-clock-fill'
+                             : 'bi-slash-circle-fill')"></i>
+            <span th:text="*{status}">Active</span>
+          </span>
+        </div>
+
+        <!-- Subscription ID -->
+        <p class="plan-sub-id">
+          Subscription ID : <strong th:text="*{id}">0123456</strong>
+        </p>
+
+        <!-- Meta: Start Date, End Date, Monthly Fee, Status -->
+        <div class="plan-meta">
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> Start Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(myPlan.startDate, 'MMM d, yyyy')}">Apr 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> End Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(myPlan.endDate, 'MMM d, yyyy')}">May 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Next Billing Amount</span>
+            <span class="meta-value">
+              $<span th:text="*{monthlyFee}">29.99</span>
+              <span style="font-weight:400;font-size:12px;color:var(--text-muted)">/month</span>
+            </span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-box-arrow-up-right"></i> Status</span>
+            <span class="meta-value"
+                  th:classappend="${myPlan.status.name() == 'ACTIVE'}   ? 'clr-success'
+                                : (${myPlan.status.name() == 'GRACE'}   ? 'clr-warning'
+                                : 'clr-danger')"
+                  th:text="*{status}">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state kalau ga ada plan aktif -->
+      <div th:if="${myPlan == null}" class="plan-card empty-plan">
+        <i class="bi bi-calendar-x"></i>
+        You don't have an active subscription.
+      </div>
+
+      <!-- Tabel History Subscription Customer -->
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Subscriber</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <!-- Tanpa kolom Subscriber karena udah jelas punya dia sendiri -->
+                <th>Subscription ID</th>
+                <th>Plan Name</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Monthly Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="h : ${myHistory}" th:object="${h}">
+                <td style="color:var(--text-muted);font-weight:600"
+                    th:text="*{id}">0123456</td>
+                <td><strong th:text="*{planName}">Starter Plan</strong></td>
+                <td>
+                  <span class="pill"
+                        th:classappend="${h.status.name() == 'ACTIVE'}    ? 'pill-active'
+                                      : (${h.status.name() == 'GRACE'}    ? 'pill-grace'
+                                      : 'pill-suspended')"
+                        th:text="*{status}">Active</span>
+                </td>
+                <td th:text="${#temporals.format(h.startDate, 'MMM d, yyyy')}">Apr 1, 2026</td>
+                <td th:text="${#temporals.format(h.endDate,   'MMM d, yyyy')}">May 1, 2026</td>
+                <td><strong>$<span th:text="*{monthlyFee}">29.99</span></strong></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(myHistory)}" class="empty-row">
+                <td colspan="6">
+                  <i class="bi bi-inbox"></i>
+                  No subscription history yet.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- /CUSTOMER VIEW -->
+
+
+    <!-- ═══════════════════════════════════════════════
+         ADMIN / TEKNISI VIEW  (role == ADMIN or TEKNISI)
+         Model dari SubscriptionController:
+           activePlan  → Subscription (card atas)
+           subscribers → List<Subscription> (semua subscriber)
+    ════════════════════════════════════════════════ -->
+    <div th:if="${role != null and (role.name() == 'ADMIN' or role.name() == 'TEKNISI')}">
+
+      <!-- Card Plan Aktif -->
+      <div th:if="${activePlan != null}" class="plan-card" th:object="${activePlan}">
+        <div class="plan-title-row">
+          <span class="plan-name" th:text="*{planName}">Starter Plan</span>
+          <span class="status-badge"
+                th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'badge-active'
+                              : (${activePlan.status.name() == 'GRACE'}    ? 'badge-grace'
+                              : 'badge-suspended')">
+            <i class="bi"
+               th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'bi-check-circle-fill'
+                             : (${activePlan.status.name() == 'GRACE'}    ? 'bi-clock-fill'
+                             : 'bi-slash-circle-fill')"></i>
+            <span th:text="*{status}">Active</span>
+          </span>
+        </div>
+        <p class="plan-sub-id">
+          Subscription ID : <strong th:text="*{id}">0123456</strong>
+        </p>
+        <div class="plan-meta">
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> Start Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(activePlan.startDate, 'MMM d, yyyy')}">Apr 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> End Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(activePlan.endDate, 'MMM d, yyyy')}">May 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Next Billing Amount</span>
+            <span class="meta-value">
+              $<span th:text="*{monthlyFee}">29.99</span>
+              <span style="font-weight:400;font-size:12px;color:var(--text-muted)">/month</span>
+            </span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-box-arrow-up-right"></i> Status</span>
+            <span class="meta-value"
+                  th:classappend="${activePlan.status.name() == 'ACTIVE'}   ? 'clr-success'
+                                : (${activePlan.status.name() == 'GRACE'}   ? 'clr-warning'
+                                : 'clr-danger')"
+                  th:text="*{status}">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${activePlan == null}" class="plan-card empty-plan">
+        <i class="bi bi-calendar-x"></i>
+        No active subscription found.
+      </div>
+
+      <!-- Tabel Semua Subscriber -->
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Subscriber</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Subscriber</th>
+                <th>Subscription ID</th>
+                <th>Plan Name</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Monthly Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="sub : ${subscribers}" th:object="${sub}">
+                <td><strong th:text="*{customer.name}">Larry Luciano</strong></td>
+                <td style="color:var(--text-muted);font-weight:600"
+                    th:text="*{id}">0123456</td>
+                <td th:text="*{planName}">Starter Plan</td>
+                <td>
+                  <span class="pill"
+                        th:classappend="${sub.status.name() == 'ACTIVE'}    ? 'pill-active'
+                                      : (${sub.status.name() == 'GRACE'}    ? 'pill-grace'
+                                      : 'pill-suspended')"
+                        th:text="*{status}">Active</span>
+                </td>
+                <td th:text="${#temporals.format(sub.startDate, 'MMM d, yyyy')}">Apr 1, 2026</td>
+                <td th:text="${#temporals.format(sub.endDate,   'MMM d, yyyy')}">May 1, 2026</td>
+                <td><strong>$<span th:text="*{monthlyFee}">29.99</span></strong></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(subscribers)}" class="empty-row">
+                <td colspan="7">
+                  <i class="bi bi-inbox"></i>
+                  No subscribers found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- /ADMIN VIEW -->
+
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS (file terpisah) -->
+<script th:src="@{/js/subscription.js}"></script>
+</body>
+</html>
