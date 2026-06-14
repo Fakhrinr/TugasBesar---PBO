@@ -33,7 +33,7 @@ public class InvoiceController {
                 invoiceService.getAllInvoices()
         );
 
-        return "billing-invoice";
+        return "invoice-list";
     }
 
     /**
@@ -106,7 +106,7 @@ public class InvoiceController {
     }
 
     /**
-     * Check invoice status
+     * Refresh invoice status
      */
     @PostMapping("/{id}/check-status")
     public String checkStatus(

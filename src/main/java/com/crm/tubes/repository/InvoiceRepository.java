@@ -1,8 +1,10 @@
 package com.crm.tubes.repository;
 
+import com.crm.tubes.model.Customer;
 import com.crm.tubes.model.Invoice;
 import com.crm.tubes.model.InvoiceStatus;
 import com.crm.tubes.model.Subscription;
+import com.crm.tubes.model.SubscriptionStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -53,18 +55,94 @@ public class InvoiceRepository {
     public Invoice findById(int id) {
 
         String sql = """
-                SELECT *
-                FROM invoice
-                WHERE id = ?
+                SELECT
+                    i.*,
+
+                    s.plan_name,
+                    s.start_date,
+                    s.end_date,
+                    s.monthly_fee,
+                    s.status AS subscription_status,
+
+                    c.id AS customer_id,
+                    c.user_id,
+                    c.phone,
+                    c.address,
+
+                    u.name
+
+                FROM invoice i
+
+                JOIN subscription s
+                    ON i.subscription_id = s.id
+
+                JOIN customer c
+                    ON s.customer_id = c.id
+
+                JOIN user u
+                    ON c.user_id = u.id
+
+                WHERE i.id = ?
                 """;
 
         return jdbcTemplate.queryForObject(
                 sql,
                 (rs, rowNum) -> {
 
+                    Customer customer = new Customer();
+
+                    customer.setId(
+                            rs.getInt("customer_id")
+                    );
+
+                    customer.setUserId(
+                            rs.getInt("user_id")
+                    );
+
+                    customer.setName(
+                            rs.getString("name")
+                    );
+
+                    customer.setPhone(
+                            rs.getString("phone")
+                    );
+
+                    customer.setAddress(
+                            rs.getString("address")
+                    );
+
                     Subscription subscription = new Subscription();
+
                     subscription.setId(
                             rs.getInt("subscription_id")
+                    );
+
+                    subscription.setCustomer(
+                            customer
+                    );
+
+                    subscription.setPlanName(
+                            rs.getString("plan_name")
+                    );
+
+                    subscription.setStartDate(
+                            rs.getDate("start_date")
+                                    .toLocalDate()
+                    );
+
+                    subscription.setEndDate(
+                            rs.getDate("end_date")
+                                    .toLocalDate()
+                    );
+
+                    subscription.setMonthlyFee(
+                            rs.getDouble("monthly_fee")
+                    );
+
+                    subscription.setStatus(
+                            SubscriptionStatus.valueOf(
+                                    rs.getString("subscription_status")
+                            )
                     );
 
                     Invoice invoice = new Invoice();
@@ -113,18 +191,94 @@ public class InvoiceRepository {
     public List<Invoice> findAll() {
 
         String sql = """
-                SELECT *
-                FROM invoice
-                ORDER BY id DESC
+                SELECT
+                    i.*,
+
+                    s.plan_name,
+                    s.start_date,
+                    s.end_date,
+                    s.monthly_fee,
+                    s.status AS subscription_status,
+
+                    c.id AS customer_id,
+                    c.user_id,
+                    c.phone,
+                    c.address,
+
+                    u.name
+
+                FROM invoice i
+
+                JOIN subscription s
+                    ON i.subscription_id = s.id
+
+                JOIN customer c
+                    ON s.customer_id = c.id
+
+                JOIN user u
+                    ON c.user_id = u.id
+
+                ORDER BY i.id DESC
                 """;
 
         return jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> {
 
+                    Customer customer = new Customer();
+
+                    customer.setId(
+                            rs.getInt("customer_id")
+                    );
+
+                    customer.setUserId(
+                            rs.getInt("user_id")
+                    );
+
+                    customer.setName(
+                            rs.getString("name")
+                    );
+
+                    customer.setPhone(
+                            rs.getString("phone")
+                    );
+
+                    customer.setAddress(
+                            rs.getString("address")
+                    );
+
                     Subscription subscription = new Subscription();
+
                     subscription.setId(
                             rs.getInt("subscription_id")
+                    );
+
+                    subscription.setCustomer(
+                            customer
+                    );
+
+                    subscription.setPlanName(
+                            rs.getString("plan_name")
+                    );
+
+                    subscription.setStartDate(
+                            rs.getDate("start_date")
+                                    .toLocalDate()
+                    );
+
+                    subscription.setEndDate(
+                            rs.getDate("end_date")
+                                    .toLocalDate()
+                    );
+
+                    subscription.setMonthlyFee(
+                            rs.getDouble("monthly_fee")
+                    );
+
+                    subscription.setStatus(
+                            SubscriptionStatus.valueOf(
+                                    rs.getString("subscription_status")
+                            )
                     );
 
                     Invoice invoice = new Invoice();
