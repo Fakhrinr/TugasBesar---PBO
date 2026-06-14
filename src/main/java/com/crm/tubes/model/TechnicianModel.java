@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TechnicianModel extends StaffModel {
-
+public class TechnicianModel extends UserModel {
     private String area;
-
-    public void updateStatus() {}
 }

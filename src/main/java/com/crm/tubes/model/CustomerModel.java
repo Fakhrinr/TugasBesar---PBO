@@ -8,14 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CustomerModel extends UserModel {
-
     private String address;
-
     private String phone;
-
-    public void viewInvoice() {}
-
-    public void createTicket() {}
-
-    public void viewSubscription() {}
 }
