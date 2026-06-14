@@ -95,9 +95,6 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
-                                rs.getInt("user_id")
-                        );
 
                        customer.setName(
                                 rs.getString("name")
@@ -231,9 +228,6 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
-                                rs.getInt("user_id")
-                        );
 
                        customer.setName(
                                 rs.getString("name")
