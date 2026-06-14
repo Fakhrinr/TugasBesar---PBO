@@ -6,7 +6,8 @@
 
     <meta charset="UTF-8">
     <title>Billing & Invoice</title>
-
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet"
           th:href="@{/css/billing-invoice.css}">
 
@@ -21,60 +22,14 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-
-        <div class="sidebar-top">
-
-            <div class="logo">
-                <i class="fa-solid fa-wifi"></i>
-            </div>
-
-            <div class="sidebar-divider"></div>
-
-            <nav class="menu">
-
-                <a href="#">
-                    <i class="fa-solid fa-table-cells-large"></i>
-                </a>
-
-                <a href="#">
-                    <i class="fa-solid fa-users"></i>
-                </a>
-
-                <a href="#">
-                    <i class="fa-solid fa-credit-card"></i>
-                </a>
-
-                <a th:href="@{/invoices}"
-                   class="active">
-
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-
-                </a>
-
-                <a href="#">
-                    <i class="fa-regular fa-calendar"></i>
-                </a>
-
-                <a href="#">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                </a>
-
-            </nav>
-
-        </div>
-
-        <div class="bottom-menu">
-
-            <a href="#">
-                <i class="fa-solid fa-bell"></i>
-            </a>
-
-            <a href="#">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </a>
-
-        </div>
-
+        <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
+        <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+        <a th:href="@{/billing}"      class="s-link active"        title="Billing">      <i class="bi bi-receipt"></i></a>
+        <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+        <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <hr/>
+        <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
     </aside>
 
     <!-- CONTENT -->
@@ -302,10 +257,8 @@
                                 </strong>
 
                                 <small>
-
                                     Customer ID:
-                                    [[${invoice.subscription.customer.id}]]
-
+                                    [[${invoice.subscription.customer.customerId}]]
                                 </small>
 
                             </div>
@@ -336,8 +289,9 @@
 
                     <td>
 
-                        <span class="status-badge"
-                              th:text="${invoice.status}">
+                        <span
+                            th:class="'status-badge status-' + ${#strings.toLowerCase(invoice.status)}"
+                            th:text="${invoice.status}">
                         </span>
 
                     </td>

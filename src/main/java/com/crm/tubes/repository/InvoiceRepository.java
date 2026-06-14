@@ -1,6 +1,6 @@
 package com.crm.tubes.repository;
 
-import com.crm.tubes.model.Customer;
+import com.crm.tubes.model.CustomerModel;
 import com.crm.tubes.model.Invoice;
 import com.crm.tubes.model.InvoiceStatus;
 import com.crm.tubes.model.Subscription;
@@ -89,28 +89,28 @@ public class InvoiceRepository {
                 sql,
                 (rs, rowNum) -> {
 
-                    Customer customer = new Customer();
+                    CustomerModel customer = new CustomerModel();
 
-                    customer.setId(
-                            rs.getInt("customer_id")
-                    );
+                        customer.setCustomerId(
+                                rs.getInt("customer_id")
+                        );
 
-                    customer.setUserId(
-                            rs.getInt("user_id")
-                    );
+                        customer.setIdUser(
+                                rs.getInt("user_id")
+                        );
 
-                    customer.setName(
-                            rs.getString("name")
-                    );
+                       customer.setName(
+                                rs.getString("name")
+                        );
 
-                    customer.setPhone(
-                            rs.getString("phone")
-                    );
+                        customer.setPhone(
+                                rs.getString("phone")
+                        );
 
-                    customer.setAddress(
-                            rs.getString("address")
-                    );
-
+                        customer.setAddress(
+                                 rs.getString("address")
+                        ); 
+                        
                     Subscription subscription = new Subscription();
 
                     subscription.setId(
@@ -225,27 +225,27 @@ public class InvoiceRepository {
                 sql,
                 (rs, rowNum) -> {
 
-                    Customer customer = new Customer();
+                    CustomerModel customer = new CustomerModel();
 
-                    customer.setId(
-                            rs.getInt("customer_id")
-                    );
+                        customer.setCustomerId(
+                                rs.getInt("customer_id")
+                        );
 
-                    customer.setUserId(
-                            rs.getInt("user_id")
-                    );
+                        customer.setIdUser(
+                                rs.getInt("user_id")
+                        );
 
-                    customer.setName(
-                            rs.getString("name")
-                    );
+                       customer.setName(
+                                rs.getString("name")
+                        );
 
-                    customer.setPhone(
-                            rs.getString("phone")
-                    );
+                        customer.setPhone(
+                                rs.getString("phone")
+                        );
 
-                    customer.setAddress(
-                            rs.getString("address")
-                    );
+                        customer.setAddress(
+                                 rs.getString("address")
+                        );     
 
                     Subscription subscription = new Subscription();
 
