@@ -1,7 +1,9 @@
 package com.crm.tubes.controller;
 
 import com.crm.tubes.model.Invoice;
+import com.crm.tubes.model.UserModel;
 import com.crm.tubes.service.InvoiceService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,7 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    public InvoiceController(
-            InvoiceService invoiceService
-    ) {
+    public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
     }
 
@@ -24,14 +24,14 @@ public class InvoiceController {
      * Display all invoices
      */
     @GetMapping
-    public String getAllInvoices(
-            Model model
-    ) {
+    public String getAllInvoices(Model model, HttpSession session) {
 
-        model.addAttribute(
-                "invoices",
-                invoiceService.getAllInvoices()
-        );
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
+
+        model.addAttribute("loggedUser", loggedUser);
+        model.addAttribute("invoices", invoiceService.getAllInvoices());
 
         return "invoice-list";
     }
@@ -40,23 +40,19 @@ public class InvoiceController {
      * Display invoice detail
      */
     @GetMapping("/{id}")
-    public String getInvoiceDetail(
-            @PathVariable int id,
-            Model model
-    ) {
+    public String getInvoiceDetail(@PathVariable int id,
+                                   Model model,
+                                   HttpSession session) {
 
-        Invoice invoice =
-                invoiceService.getInvoiceById(id);
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
 
-        model.addAttribute(
-                "invoice",
-                invoice
-        );
+        Invoice invoice = invoiceService.getInvoiceById(id);
 
-        model.addAttribute(
-                "total",
-                invoice.calculateTotal()
-        );
+        model.addAttribute("loggedUser", loggedUser);
+        model.addAttribute("invoice", invoice);
+        model.addAttribute("total", invoice.calculateTotal());
 
         return "invoice-detail";
     }
@@ -65,13 +61,14 @@ public class InvoiceController {
      * Create invoice
      */
     @PostMapping
-    public String createInvoice(
-            @ModelAttribute Invoice invoice
-    ) {
+    public String createInvoice(@ModelAttribute Invoice invoice,
+                                HttpSession session) {
 
-        invoiceService.createInvoice(
-                invoice
-        );
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
+
+        invoiceService.createInvoice(invoice);
 
         return "redirect:/invoices";
     }
@@ -80,9 +77,11 @@ public class InvoiceController {
      * Mark invoice as paid
      */
     @PostMapping("/{id}/pay")
-    public String markAsPaid(
-            @PathVariable int id
-    ) {
+    public String markAsPaid(@PathVariable int id, HttpSession session) {
+
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
 
         invoiceService.markAsPaid(id);
 
@@ -93,14 +92,14 @@ public class InvoiceController {
      * Apply late fee
      */
     @PostMapping("/{id}/late-fee")
-    public String applyLateFee(
-            @PathVariable int id
-    ) {
+    public String applyLateFee(@PathVariable int id, HttpSession session) {
 
-        invoiceService.applyLateFee(
-                id,
-                BigDecimal.valueOf(5.00)
-        );
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
+
+        // Fix: late fee yang wajar = Rp 50.000
+        invoiceService.applyLateFee(id, BigDecimal.valueOf(50000));
 
         return "redirect:/invoices/" + id;
     }
@@ -109,9 +108,11 @@ public class InvoiceController {
      * Refresh invoice status
      */
     @PostMapping("/{id}/check-status")
-    public String checkStatus(
-            @PathVariable int id
-    ) {
+    public String checkStatus(@PathVariable int id, HttpSession session) {
+
+        // Cek session login
+        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/auth/login";
 
         invoiceService.checkInvoiceStatus(id);
 
