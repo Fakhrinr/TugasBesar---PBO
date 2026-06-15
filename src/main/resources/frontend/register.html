@@ -36,6 +36,10 @@
                         <circle cx="12" cy="12" r="3" />
                     </svg></button>
             </div>
+            <div class="field"><input type="text" th:field="*{address}" placeholder="Address"
+                    autocomplete="street-address" required /></div>
+            <div class="field"><input type="tel" th:field="*{phone}" placeholder="Phone Number" autocomplete="tel"
+                    required /></div>
             <button type="submit" class="btn-primary">Sign Up</button>
         </form>
         <p class="footer-text">Do you have an account? <a th:href="@{/login}">Sign In</a></p>

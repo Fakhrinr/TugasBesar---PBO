@@ -10,10 +10,8 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet"
           th:href="@{/css/billing-invoice.css}">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           rel="stylesheet">
-
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 
 </head>
@@ -53,12 +51,10 @@
             <div class="header-actions">
 
                 <button class="icon-btn">
-
                     <i class="fa-regular fa-bell"></i>
-
                 </button>
 
-                <img src="https://ui-avatars.com/api/?name=Admin&background=5B4FF7&color=ffffff"
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${loggedUser.name} + '&background=5B4FF7&color=ffffff'"
                      class="profile"
                      alt="profile">
 
@@ -77,117 +73,62 @@
 
         </section>
 
-        <!-- STATS -->
-        <section class="stats-grid">
+        <!-- STATS — hanya tampil untuk Admin -->
+        <section class="stats-grid" th:if="${loggedUser.role.name() == 'ADMIN'}">
 
             <div class="stat-card">
-
                 <div class="stat-icon purple">
                     <i class="fa-solid fa-file-invoice"></i>
                 </div>
-
                 <div>
-
                     <span>Total Invoice</span>
-
-                    <h3 th:text="${#lists.size(invoices)}">
-                        0
-                    </h3>
-
-                    <small>
-                        Total Records
-                    </small>
-
+                    <h3 th:text="${#lists.size(invoices)}">0</h3>
+                    <small>Total Records</small>
                 </div>
-
             </div>
 
             <div class="stat-card">
-
                 <div class="stat-icon blue">
                     <i class="fa-solid fa-folder-open"></i>
                 </div>
-
                 <div>
-
                     <span>Open Invoice</span>
-
-                    <h3 id="openCount">
-                        0
-                    </h3>
-
-                    <small>
-                        Pending Payment
-                    </small>
-
+                    <h3 id="openCount">0</h3>
+                    <small>Pending Payment</small>
                 </div>
-
             </div>
 
             <div class="stat-card">
-
                 <div class="stat-icon red">
                     <i class="fa-solid fa-clock"></i>
                 </div>
-
                 <div>
-
                     <span>Overdue Invoice</span>
-
-                    <h3 id="overdueCount">
-                        0
-                    </h3>
-
-                    <small>
-                        Need Action
-                    </small>
-
+                    <h3 id="overdueCount">0</h3>
+                    <small>Need Action</small>
                 </div>
-
             </div>
 
             <div class="stat-card">
-
                 <div class="stat-icon green">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
-
                 <div>
-
                     <span>Paid Invoice</span>
-
-                    <h3 id="paidCount">
-                        0
-                    </h3>
-
-                    <small>
-                        Completed
-                    </small>
-
+                    <h3 id="paidCount">0</h3>
+                    <small>Completed</small>
                 </div>
-
             </div>
 
             <div class="stat-card">
-
                 <div class="stat-icon orange">
                     <i class="fa-solid fa-dollar-sign"></i>
                 </div>
-
                 <div>
-
                     <span>Total Revenue</span>
-
-                    <h3 id="revenueTotal">
-                        Rp 0
-                    </h3>
-
-                    <small>
-                        Generated Revenue
-                    </small>
-
+                    <h3 id="revenueTotal">$ 0</h3>
+                    <small>Generated Revenue</small>
                 </div>
-
             </div>
 
         </section>
@@ -195,21 +136,19 @@
         <!-- TOOLBAR -->
         <section class="toolbar">
 
-    <input type="text"
-           id="searchInput"
-           placeholder="Search by customer name or invoice no...">
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Search by customer name or invoice no...">
 
-    <select id="statusFilter">
+            <select id="statusFilter">
+                <option value="ALL">All Status</option>
+                <option value="OPEN">Open</option>
+                <option value="PAID">Paid</option>
+                <option value="OVERDUE">Overdue</option>
+                <option value="DRAFT">Draft</option>
+            </select>
 
-        <option value="ALL">All Status</option>
-        <option value="OPEN">Open</option>
-        <option value="PAID">Paid</option>
-        <option value="OVERDUE">Overdue</option>
-        <option value="DRAFT">Draft</option>
-
-    </select>
-
-</section>
+        </section>
 
         <!-- TABLE -->
         <section class="table-wrapper">
@@ -217,9 +156,7 @@
             <table>
 
                 <thead>
-
                 <tr>
-
                     <th>Customer</th>
                     <th>Plan</th>
                     <th>Invoice No</th>
@@ -227,10 +164,9 @@
                     <th>Amount</th>
                     <th>Issue Date</th>
                     <th>Due Date</th>
-                    <th>Action</th>
-
+                    <!-- Kolom Action hanya untuk Admin -->
+                    <th th:if="${loggedUser.role.name() == 'ADMIN'}">Action</th>
                 </tr>
-
                 </thead>
 
                 <tbody>
@@ -242,93 +178,59 @@
                     ">
 
                     <!-- CUSTOMER -->
-
                     <td>
-
                         <div class="customer-cell">
-
                             <img th:src="'https://ui-avatars.com/api/?name='
                                         + ${invoice.subscription.customer.name}
                                         + '&background=5B4FF7&color=ffffff'"
                                  alt="avatar">
-
                             <div>
-
-                                <strong
-                                        th:text="${invoice.subscription.customer.name}">
-                                </strong>
-
+                                <strong th:text="${invoice.subscription.customer.name}"></strong>
                                 <small>
                                     Customer ID:
                                     [[${invoice.subscription.customer.customerId}]]
                                 </small>
-
                             </div>
-
                         </div>
-
                     </td>
 
                     <!-- PLAN -->
-
                     <td>
-
                         <span class="plan-badge"
                               th:text="${invoice.subscription.planName}">
                         </span>
-
                     </td>
 
-                    <!-- INVOICE -->
-
+                    <!-- INVOICE NO -->
                     <td>
-
                         INV-[[${invoice.id}]]
-
                     </td>
 
                     <!-- STATUS -->
-
                     <td>
-
                         <span
                             th:class="'status-badge status-' + ${#strings.toLowerCase(invoice.status)}"
                             th:text="${invoice.status}">
                         </span>
-
                     </td>
 
                     <!-- AMOUNT -->
-
                     <td>
-
-                        Rp
-                        <span th:text="${invoice.totalAmount}">
-                        </span>
-
+                        $ <span th:text="${invoice.totalAmount}"></span>
                     </td>
 
                     <!-- ISSUE DATE -->
-
-                    <td th:text="${invoice.issueDate}">
-                    </td>
+                    <td th:text="${invoice.issueDate}"></td>
 
                     <!-- DUE DATE -->
+                    <td th:text="${invoice.dueDate}"></td>
 
-                    <td th:text="${invoice.dueDate}">
-                    </td>
-
-                    <!-- ACTION -->
-
-                    <td>
-
+                    <!-- ACTION — hanya untuk Admin -->
+                    <td th:if="${loggedUser.role.name() == 'ADMIN'}">
                         <a th:href="@{/invoices/{id}(id=${invoice.id})}"
                            class="view-btn">
-
                             <i class="fa-solid fa-eye"></i>
-
                         </a>
-
                     </td>
 
                 </tr>
