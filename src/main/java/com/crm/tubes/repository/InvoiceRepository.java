@@ -1,15 +1,16 @@
 package com.crm.tubes.repository;
 
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import com.crm.tubes.model.CustomerModel;
 import com.crm.tubes.model.Invoice;
 import com.crm.tubes.model.InvoiceStatus;
 import com.crm.tubes.model.Subscription;
 import com.crm.tubes.model.SubscriptionStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-
-import java.sql.Date;
-import java.util.List;
 
 @Repository
 public class InvoiceRepository {
@@ -95,7 +96,7 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
+                        customer.setId(
                                 rs.getInt("user_id")
                         );
 
@@ -231,7 +232,7 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
+                        customer.setId(
                                 rs.getInt("user_id")
                         );
 

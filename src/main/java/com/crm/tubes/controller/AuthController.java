@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.crm.tubes.model.UserModel;
 import com.crm.tubes.service.AuthService;
 import com.crm.tubes.service.AuthService.LoginRequest;
 import com.crm.tubes.service.AuthService.RegisterRequest;
@@ -22,69 +21,40 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // ── GET ──────────────────────────────────────────────────
-
     @GetMapping({"/", "/login"})
     public String loginPage(Model model, HttpSession session) {
-        if (authService.isLoggedIn(session)) return "redirect:/dashboard";
+        if (authService.isLoggedIn(session)) {
+            return "redirect:/dashboard";
+        }
+
         model.addAttribute("loginRequest", new LoginRequest());
-        return "auth/login";
+        return "login";
     }
-
-    @GetMapping("/register")
-    public String registerPage(Model model, HttpSession session) {
-        if (authService.isLoggedIn(session)) return "redirect:/dashboard";
-        model.addAttribute("registerRequest", new RegisterRequest());
-        return "auth/register";
-    }
-
-    @GetMapping("/forgot-password")
-    public String forgotPage(Model model) {
-        model.addAttribute("resetRequest", new ResetPasswordRequest());
-        return "auth/forgot-password";
-    }
-
-    @GetMapping("/change-password")
-    public String changePage(Model model) {
-        model.addAttribute("resetRequest", new ResetPasswordRequest());
-        return "auth/change-password";
-    }
-
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session) {
-        if (!authService.isLoggedIn(session)) return "redirect:/login";
-
-        UserModel user = authService.getLoggedUser(session);
-
-        // Role-based redirect (expand later)
-        return switch (user.getRole()) {
-            case ADMIN    -> "dashboard/admin";
-            case TEKNISI  -> "dashboard/teknisi";
-            case CUSTOMER -> "dashboard/customer";
-        };
-    }
-
-    @GetMapping("/logout")
-    public String logoutGet(HttpSession session) {
-        authService.logout(session);
-        return "redirect:/login";
-    }
-
-    // ── POST ─────────────────────────────────────────────────
 
     @PostMapping("/login")
     public String login(
             @ModelAttribute LoginRequest request,
             HttpSession session,
             Model model) {
+
         try {
             authService.login(request, session);
             return "redirect:/dashboard";
         } catch (RuntimeException e) {
             model.addAttribute("loginRequest", request);
             model.addAttribute("error", e.getMessage());
-            return "auth/login";
+            return "login";
         }
+    }
+
+    @GetMapping("/register")
+    public String registerPage(Model model, HttpSession session) {
+        if (authService.isLoggedIn(session)) {
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "register";
     }
 
     @PostMapping("/register")
@@ -92,15 +62,35 @@ public class AuthController {
             @ModelAttribute RegisterRequest request,
             Model model,
             RedirectAttributes ra) {
+
         try {
             authService.register(request);
-            ra.addFlashAttribute("success", "Registrasi berhasil! Silakan login.");
+
+            ra.addFlashAttribute(
+                    "success",
+                    "Registrasi berhasil! Silakan login."
+            );
+
             return "redirect:/login";
+
         } catch (RuntimeException e) {
+
             model.addAttribute("registerRequest", request);
             model.addAttribute("error", e.getMessage());
-            return "auth/register";
+
+            return "register";
         }
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordPage(Model model) {
+
+        model.addAttribute(
+                "resetRequest",
+                new ResetPasswordRequest()
+        );
+
+        return "forgetpass";
     }
 
     @PostMapping("/forgot-password")
@@ -108,15 +98,38 @@ public class AuthController {
             @ModelAttribute ResetPasswordRequest request,
             Model model,
             RedirectAttributes ra) {
+
         try {
-            authService.validateEmailExists(request.getEmail());
-            ra.addFlashAttribute("email", request.getEmail());
+
+            authService.validateEmailExists(
+                    request.getEmail()
+            );
+
+            ra.addFlashAttribute(
+                    "email",
+                    request.getEmail()
+            );
+
             return "redirect:/change-password";
+
         } catch (RuntimeException e) {
+
             model.addAttribute("resetRequest", request);
             model.addAttribute("error", e.getMessage());
-            return "auth/forgot-password";
+
+            return "forgetpass";
         }
+    }
+
+    @GetMapping("/change-password")
+    public String changePasswordPage(Model model) {
+
+        model.addAttribute(
+                "resetRequest",
+                new ResetPasswordRequest()
+        );
+
+        return "changepass";
     }
 
     @PostMapping("/change-password")
@@ -124,21 +137,40 @@ public class AuthController {
             @ModelAttribute ResetPasswordRequest request,
             Model model,
             RedirectAttributes ra) {
+
         try {
+
             authService.resetPassword(request);
-            ra.addFlashAttribute("success", "Password berhasil diubah!");
+
+            ra.addFlashAttribute(
+                    "success",
+                    "Password berhasil diubah!"
+            );
+
             return "redirect:/login";
+
         } catch (RuntimeException e) {
+
             model.addAttribute("resetRequest", request);
             model.addAttribute("error", e.getMessage());
-            return "auth/change-password";
+
+            return "changepass";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logoutGet(HttpSession session) {
+
+        authService.logout(session);
+
+        return "redirect:/login";
     }
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {
+
         authService.logout(session);
+
         return "redirect:/login";
     }
-
 }
