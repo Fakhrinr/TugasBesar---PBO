@@ -1,14 +1,16 @@
 package com.crm.tubes.repository;
 
-import com.crm.tubes.model.CustomerModel;
-import com.crm.tubes.model.Subscription;
-import com.crm.tubes.model.SubscriptionStatus;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.crm.tubes.model.CustomerModel;
+import com.crm.tubes.model.Subscription;
+import com.crm.tubes.model.SubscriptionStatus;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * SubscriptionRepository — ngomong sama database MySQL.
