@@ -31,13 +31,6 @@ if (menuBtn && sidebar) {
   menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
 }
 
-// ── Active nav highlight ──────────────────────────────────
-const currentPath = window.location.pathname;
-document.querySelectorAll('.nav-item').forEach(link => {
-  if (link.getAttribute('href') === currentPath) {
-    link.classList.add('active');
-  }
-});
 
 // ── Confirm actions ───────────────────────────────────────
 function confirmAction(msg, formId) {
