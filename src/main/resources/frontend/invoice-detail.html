@@ -9,10 +9,8 @@
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <link rel="stylesheet"
           th:href="@{/css/billing-invoice.css}">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
@@ -26,13 +24,13 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
-            <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
-            <a th:href="@{/billing}"      class="s-link active" title="Billing">      <i class="bi bi-receipt"></i></a>
-            <a th:href="@{/subscription}" class="s-link"        title="Subscription"> <i class="bi bi-calendar-check"></i></a>
-            <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
-            <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
-            <hr/>
-            <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+        <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+        <a th:href="@{/billing}"      class="s-link active" title="Billing">      <i class="bi bi-receipt"></i></a>
+        <a th:href="@{/subscription}" class="s-link"        title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+        <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <hr/>
+        <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -43,19 +41,14 @@
 
             <div>
 
-                <a th:href="@{/invoices}"
-                   class="back-link">
-
+                <a th:href="@{/invoices}" class="back-link">
                     <i class="fa-solid fa-arrow-left"></i>
                     Back to Invoice List
-
                 </a>
 
                 <h1>Invoice Details</h1>
 
-                <p>
-                    Billing & Invoice > Invoice Details
-                </p>
+                <p>Billing & Invoice > Invoice Details</p>
 
             </div>
 
@@ -65,10 +58,9 @@
                     <i class="fa-regular fa-bell"></i>
                 </button>
 
-                <img
-                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                    class="profile"
-                    alt="profile">
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${loggedUser.name} + '&background=5B4FF7&color=ffffff'"
+                     class="profile"
+                     alt="profile">
 
             </div>
 
@@ -78,45 +70,33 @@
         <section class="detail-grid">
 
             <!-- CUSTOMER -->
-
             <div class="detail-card">
 
                 <div class="card-title">
-
                     <i class="fa-regular fa-user"></i>
                     Customer Information
-
                 </div>
 
                 <div class="info-table">
 
                     <div>
                         <label>Customer Name</label>
-
-                        <span th:text="${invoice.subscription.customer.name}">
-                        </span>
+                        <span th:text="${invoice.subscription.customer.name}"></span>
                     </div>
 
                     <div>
                         <label>Phone Number</label>
-
-                        <span th:text="${invoice.subscription.customer.phone}">
-                        </span>
+                        <span th:text="${invoice.subscription.customer.phone}"></span>
                     </div>
 
                     <div>
                         <label>Address</label>
-
-                        <span th:text="${invoice.subscription.customer.address}">
-                        </span>
+                        <span th:text="${invoice.subscription.customer.address}"></span>
                     </div>
 
                     <div>
                         <label>Customer ID</label>
-
-                        <span>
-                            CUST-[[${invoice.subscription.customer.customerId}]]
-                        </span>
+                        <span>CUST-[[${invoice.subscription.customer.customerId}]]</span>
                     </div>
 
                 </div>
@@ -124,50 +104,37 @@
             </div>
 
             <!-- SUBSCRIPTION -->
-
             <div class="detail-card">
 
                 <div class="card-title">
-
                     <i class="fa-solid fa-wifi"></i>
                     Subscription Information
-
                 </div>
 
                 <div class="info-table">
 
                     <div>
                         <label>Plan Name</label>
-
-                        <span th:text="${invoice.subscription.planName}">
-                        </span>
+                        <span th:text="${invoice.subscription.planName}"></span>
                     </div>
 
                     <div>
                         <label>Monthly Fee</label>
-
-                        <span>
-                            Rp [[${invoice.subscription.monthlyFee}]]
-                        </span>
+                        <span>$ [[${invoice.subscription.monthlyFee}]]</span>
                     </div>
 
                     <div>
                         <label>Start Date</label>
-
-                        <span th:text="${invoice.subscription.startDate}">
-                        </span>
+                        <span th:text="${invoice.subscription.startDate}"></span>
                     </div>
 
                     <div>
                         <label>End Date</label>
-
-                        <span th:text="${invoice.subscription.endDate}">
-                        </span>
+                        <span th:text="${invoice.subscription.endDate}"></span>
                     </div>
 
                     <div>
                         <label>Status</label>
-
                         <span
                             th:class="'status-badge status-' + ${#strings.toLowerCase(invoice.subscription.status)}"
                             th:text="${invoice.subscription.status}">
@@ -179,43 +146,32 @@
             </div>
 
             <!-- INVOICE -->
-
             <div class="detail-card">
 
                 <div class="card-title">
-
                     <i class="fa-regular fa-file-lines"></i>
                     Invoice Information
-
                 </div>
 
                 <div class="info-table">
 
                     <div>
                         <label>Invoice Number</label>
-
-                        <span>
-                            INV-[[${invoice.id}]]
-                        </span>
+                        <span>INV-[[${invoice.id}]]</span>
                     </div>
 
                     <div>
                         <label>Issue Date</label>
-
-                        <span th:text="${invoice.issueDate}">
-                        </span>
+                        <span th:text="${invoice.issueDate}"></span>
                     </div>
 
                     <div>
                         <label>Due Date</label>
-
-                        <span th:text="${invoice.dueDate}">
-                        </span>
+                        <span th:text="${invoice.dueDate}"></span>
                     </div>
 
                     <div>
                         <label>Invoice Status</label>
-
                         <span
                             th:class="'status-badge status-' + ${#strings.toLowerCase(invoice.status)}"
                             th:text="${invoice.status}">
@@ -232,153 +188,100 @@
         <section class="bottom-grid">
 
             <!-- BILLING BREAKDOWN -->
-
             <div class="detail-card">
 
                 <div class="card-title">
-
                     <i class="fa-solid fa-receipt"></i>
                     Billing Breakdown
-
                 </div>
 
                 <table class="billing-table">
 
                     <tr>
-
                         <td>Monthly Subscription Fee</td>
-
-                        <td>
-                            Rp [[${invoice.totalAmount}]]
-                        </td>
-
+                        <td>$ [[${invoice.totalAmount}]]</td>
                     </tr>
 
                     <tr>
-
                         <td>Late Fee</td>
-
-                        <td>
-                            Rp [[${invoice.lateFeeAmount}]]
-                        </td>
-
+                        <td>$ [[${invoice.lateFeeAmount}]]</td>
                     </tr>
 
                     <tr class="total-row">
-
                         <td>Total Amount</td>
-
-                        <td>
-                            Rp [[${total}]]
-                        </td>
-
+                        <td>$ [[${total}]]</td>
                     </tr>
 
                 </table>
 
             </div>
 
-            <!-- ACTIONS -->
-
-            <div class="detail-card action-card">
+            <!-- ACTIONS — hanya untuk Admin -->
+            <div class="detail-card action-card"
+                 th:if="${loggedUser.role.name() == 'ADMIN'}">
 
                 <div class="card-title">
-
                     <i class="fa-solid fa-bolt"></i>
                     Actions
-
                 </div>
 
                 <form th:action="@{/invoices/{id}/late-fee(id=${invoice.id})}"
                       method="post">
-
                     <button class="btn-purple">
-
                         <i class="fa-solid fa-plus"></i>
                         Apply Late Fee
-
                     </button>
-
                 </form>
 
                 <form th:action="@{/invoices/{id}/pay(id=${invoice.id})}"
                       method="post">
-
                     <button class="btn-green">
-
                         <i class="fa-solid fa-check"></i>
                         Mark As Paid
-
                     </button>
-
                 </form>
 
                 <form th:action="@{/invoices/{id}/check-status(id=${invoice.id})}"
                       method="post">
-
                     <button class="btn-outline">
-
                         <i class="fa-solid fa-rotate"></i>
                         Refresh Status
-
                     </button>
-
                 </form>
 
             </div>
 
             <!-- SUMMARY -->
-
             <div class="detail-card">
 
                 <div class="card-title">
-
                     <i class="fa-solid fa-chart-pie"></i>
                     Invoice Summary
-
                 </div>
 
                 <div class="info-table">
 
                     <div>
-
                         <label>Invoice ID</label>
-
-                        <span>
-                            INV-[[${invoice.id}]]
-                        </span>
-
+                        <span>INV-[[${invoice.id}]]</span>
                     </div>
 
                     <div>
-
                         <label>Subscription ID</label>
-
-                        <span>
-                            SUB-[[${invoice.subscription.id}]]
-                        </span>
-
+                        <span>SUB-[[${invoice.subscription.id}]]</span>
                     </div>
 
                     <div>
-
                         <label>Current Status</label>
-
                         <span
                             th:class="'status-badge status-' + ${#strings.toLowerCase(invoice.status)}"
                             th:text="${invoice.status}">
                         </span>
-
                     </div>
 
                     <div>
-
                         <label>Total Payable</label>
-
-                        <span>
-                            Rp [[${total}]]
-                        </span>
-
+                        <span>$ [[${total}]]</span>
                     </div>
 
                 </div>

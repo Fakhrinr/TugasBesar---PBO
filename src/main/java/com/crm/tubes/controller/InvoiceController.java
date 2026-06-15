@@ -20,35 +20,76 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
+    // ── Helper: cek login ──────────────────────────────
+    private UserModel getLoggedUser(HttpSession session) {
+        return (UserModel) session.getAttribute("loggedUser");
+    }
+
+    // ── Helper: cek apakah admin ──────────────────────
+    private boolean isAdmin(UserModel user) {
+        return user.getRole() == UserModel.Role.ADMIN;
+    }
+
+    // ── Helper: cek apakah customer ───────────────────
+    private boolean isCustomer(UserModel user) {
+        return user.getRole() == UserModel.Role.CUSTOMER;
+    }
+
     /**
      * Display all invoices
+     * Admin    → lihat semua invoice
+     * Customer → lihat invoice miliknya saja
+     * Teknisi  → tidak punya akses
      */
     @GetMapping
     public String getAllInvoices(Model model, HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
 
-        model.addAttribute("loggedUser", loggedUser);
-        model.addAttribute("invoices", invoiceService.getAllInvoices());
+        if (isAdmin(loggedUser)) {
+            // Admin lihat semua invoice
+            model.addAttribute("invoices", invoiceService.getAllInvoices());
 
+        } else if (isCustomer(loggedUser)) {
+            // Customer hanya lihat invoice miliknya
+            model.addAttribute("invoices",
+                invoiceService.getInvoicesByCustomerId(loggedUser.getCustomerId()));
+
+        } else {
+            // Role lain (TEKNISI) tidak punya akses
+            return "redirect:/unauthorized";
+        }
+
+        model.addAttribute("loggedUser", loggedUser);
         return "invoice-list";
     }
 
     /**
      * Display invoice detail
+     * Admin    → bisa lihat semua invoice
+     * Customer → hanya bisa lihat invoice miliknya
+     * Teknisi  → tidak punya akses
      */
     @GetMapping("/{id}")
     public String getInvoiceDetail(@PathVariable int id,
                                    Model model,
                                    HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
 
         Invoice invoice = invoiceService.getInvoiceById(id);
+
+        if (isCustomer(loggedUser)) {
+            // Pastikan invoice ini milik customer yang login
+            int ownerCustomerId = invoice.getSubscription().getCustomer().getCustomerId();
+            if (ownerCustomerId != loggedUser.getCustomerId()) {
+                return "redirect:/unauthorized";
+            }
+        } else if (!isAdmin(loggedUser)) {
+            return "redirect:/unauthorized";
+        }
 
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("invoice", invoice);
@@ -59,63 +100,62 @@ public class InvoiceController {
 
     /**
      * Create invoice
+     * Hanya Admin
      */
     @PostMapping
     public String createInvoice(@ModelAttribute Invoice invoice,
                                 HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
+        if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
         invoiceService.createInvoice(invoice);
-
         return "redirect:/invoices";
     }
 
     /**
      * Mark invoice as paid
+     * Hanya Admin
      */
     @PostMapping("/{id}/pay")
     public String markAsPaid(@PathVariable int id, HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
+        if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
         invoiceService.markAsPaid(id);
-
         return "redirect:/invoices/" + id;
     }
 
     /**
      * Apply late fee
+     * Hanya Admin
      */
     @PostMapping("/{id}/late-fee")
     public String applyLateFee(@PathVariable int id, HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
+        if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
-        // Fix: late fee yang wajar = Rp 50.000
         invoiceService.applyLateFee(id, BigDecimal.valueOf(50000));
-
         return "redirect:/invoices/" + id;
     }
 
     /**
      * Refresh invoice status
+     * Hanya Admin
      */
     @PostMapping("/{id}/check-status")
     public String checkStatus(@PathVariable int id, HttpSession session) {
 
-        // Cek session login
-        UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
+        UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
+        if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
         invoiceService.checkInvoiceStatus(id);
-
         return "redirect:/invoices/" + id;
     }
 }
