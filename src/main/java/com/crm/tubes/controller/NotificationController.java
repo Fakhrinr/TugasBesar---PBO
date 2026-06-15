@@ -49,7 +49,7 @@ public class NotificationController {
         model.addAttribute("userId", userId);
         model.addAttribute("loggedUser", loggedUser);
 
-        return "notifications";
+        return "notification";
     }
 
     @PostMapping("/{notificationId}/read")

@@ -49,9 +49,11 @@ a {
     min-height: 100vh;
 }
 
-.content {
+.notification-content {
     flex: 1;
     min-width: 0;
+    margin-left: 74px;
+    width: calc(100% - 74px);
     padding: 0 48px 60px;
 }
 
