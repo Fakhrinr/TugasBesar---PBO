@@ -95,7 +95,7 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
+                        customer.setId(
                                 rs.getInt("user_id")
                         );
 
@@ -231,7 +231,7 @@ public class InvoiceRepository {
                                 rs.getInt("customer_id")
                         );
 
-                        customer.setIdUser(
+                        customer.setId(
                                 rs.getInt("user_id")
                         );
 
