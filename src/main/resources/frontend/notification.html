@@ -47,7 +47,7 @@
         <header class="page-header">
 
             <div class="header-title">
-                <h1>Notification</h1>
+                <h2>Notification</h2>
 
                 <!-- ADMIN -->
                 <p th:if="${loggedUser.role.name() == 'ADMIN'}">
@@ -68,39 +68,24 @@
             <div class="header-actions">
 
                 <a th:href="@{/notifications}"
-                   class="header-notification-button"
-                   title="Notification">
+                class="header-notification-button"
+                title="Notification">
 
-                    <i class="fa-regular fa-bell"></i>
+                <i class="fa-regular fa-bell"></i>
 
-                    <span th:if="${unreadCount > 0}"
-                          th:text="${unreadCount}"
-                          class="notification-count">
-                        0
-                    </span>
+                <span th:if="${unreadCount > 0}"
+                th:text="${unreadCount}"
+                class="notification-count">
+                0
+                </span>
                 </a>
 
-                <div class="profile-container">
-
-                    <img th:src="'https://ui-avatars.com/api/?name='
-                                + ${loggedUser.name}
-                                + '&background=5B4FF7&color=ffffff'"
-                         class="profile-image"
-                         alt="Profile">
-
-                    <div class="profile-information">
-                        <strong th:text="${loggedUser.name}">
-                            User
-                        </strong>
-
-                        <span th:text="${loggedUser.role}">
-                            ROLE
-                        </span>
-                    </div>
-
+                <div class="avatar"
+                th:text="${#strings.substring(loggedUser.name, 0, 2).toUpperCase()}">
+                AB
                 </div>
+        </div>
 
-            </div>
 
         </header>
 
