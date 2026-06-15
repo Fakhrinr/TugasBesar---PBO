@@ -140,7 +140,7 @@ public class InvoiceController {
         if (loggedUser == null) return "redirect:/login";
         if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
-        invoiceService.applyLateFee(id, BigDecimal.valueOf(50000));
+        invoiceService.applyLateFee(id, BigDecimal.valueOf(3));
         return "redirect:/invoices/" + id;
     }
 
