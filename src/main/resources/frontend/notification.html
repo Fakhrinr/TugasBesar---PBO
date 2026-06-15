@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification</title>
+    <link rel="stylesheet" th:href="@{/css/notification.css}">
+    <script defer th:src="@{/js/notification.js}"></script>
+</head>
+<body>
+<aside class="sidebar">
+    <a class="brand-icon" th:href="@{/dashboard}" aria-label="CRM ISP">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </a>
+
+    <nav class="side-nav" aria-label="Main navigation">
+        <a class="nav-item" th:href="@{/dashboard}" title="Dashboard" aria-label="Dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+        </a>
+
+        <a class="nav-item active" th:href="@{/notifications/user/{userId}(userId=${userId})}" title="Notification" aria-label="Notification">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 6 3 9H3c0-3 3-2 3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+        </a>
+
+        <a class="nav-item" href="#" title="Invoice" aria-label="Invoice">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3h8l4 4v14H7z"></path>
+                <path d="M15 3v5h5"></path>
+                <path d="M9 13h6"></path>
+                <path d="M9 17h4"></path>
+            </svg>
+        </a>
+
+        <a class="nav-item" href="#" title="Ticket" aria-label="Ticket">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h10"></path>
+            </svg>
+        </a>
+    </nav>
+
+    <a class="nav-item logout" th:href="@{/logout}" title="Logout" aria-label="Logout">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <path d="M16 17l5-5-5-5"></path>
+            <path d="M21 12H9"></path>
+        </svg>
+    </a>
+</aside>
+
+<main class="page">
+    <header class="topbar">
+        <div>
+            <h1>Notification</h1>
+            <p th:if="${unreadCount > 0}" th:text="${unreadCount + ' notifikasi belum dibaca'}">0 notifikasi belum dibaca</p>
+            <p th:unless="${unreadCount > 0}">Semua notifikasi sudah dibaca</p>
+        </div>
+
+        <div class="top-actions">
+            <form th:if="${unreadCount > 0}" th:action="@{/notifications/user/{userId}/read-all(userId=${userId})}" method="post">
+                <button class="icon-button" type="submit" title="Tandai semua dibaca" aria-label="Tandai semua dibaca">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="bell-wrap" title="Unread notification">
+                <svg class="bell" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 6 3 9H3c0-3 3-2 3-9"></path>
+                    <path d="M10 21h4"></path>
+                </svg>
+                <span th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+            </div>
+
+            <div class="profile-avatar" aria-label="User profile">
+                <span th:text="${'U' + userId}">U1</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="toolbar">
+        <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 21l-4.3-4.3"></path>
+                <circle cx="11" cy="11" r="7"></circle>
+            </svg>
+            <input id="notificationSearch" type="search" placeholder="Cari notifikasi..." autocomplete="off">
+        </div>
+
+        <div class="filter-tabs" role="group" aria-label="Filter notifications">
+            <button class="filter-tab active" type="button" data-filter="all">Semua</button>
+            <button class="filter-tab" type="button" data-filter="unread">Belum dibaca</button>
+            <button class="filter-tab" type="button" data-filter="read">Dibaca</button>
+        </div>
+    </section>
+
+    <section class="content">
+        <div th:if="${successMessage}" class="flash success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="flash error" th:text="${errorMessage}"></div>
+
+        <div class="empty-state server-empty" th:if="${#lists.isEmpty(notifications)}">
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 6 3 9H3c0-3 3-2 3-9"></path>
+                    <path d="M10 21h4"></path>
+                </svg>
+            </div>
+            <h2>Belum ada notifikasi</h2>
+            <p>Notifikasi baru dari akun, invoice, pembayaran, subscription, dan ticket akan muncul di sini.</p>
+        </div>
+
+        <div class="empty-state client-empty" hidden>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 21l-4.3-4.3"></path>
+                    <circle cx="11" cy="11" r="7"></circle>
+                </svg>
+            </div>
+            <h2>Tidak ada hasil</h2>
+            <p>Coba kata kunci atau filter yang berbeda.</p>
+        </div>
+
+        <article class="notification-card"
+                 th:each="notification : ${notifications}"
+                 th:classappend="${notification.read} ? ' read' : ' unread'"
+                 th:data-state="${notification.read} ? 'read' : 'unread'"
+                 th:data-type="${notification.type}"
+                 th:data-message="${notification.message}">
+            <div class="notification-avatar" th:text="${#strings.substring(notification.type.name(), 0, 1)}">N</div>
+
+            <div class="notification-body">
+                <div class="notification-line">
+                    <strong th:text="${notification.type}">GENERAL</strong>
+                    <span th:text="${notification.message}">Isi notifikasi</span>
+                </div>
+
+                <div class="notification-meta">
+                    <span th:text="${#temporals.format(notification.createdAt, 'dd MMM yyyy HH:mm')}">15 Jun 2026 10:30</span>
+                    <span class="status-pill" th:if="${!notification.read}">Belum dibaca</span>
+                    <span class="status-pill muted" th:if="${notification.read}">Dibaca</span>
+                </div>
+
+                <div class="card-actions">
+                    <form th:if="${!notification.read}"
+                          th:action="@{/notifications/{notificationId}/read(notificationId=${notification.id})}"
+                          method="post">
+                        <input type="hidden" name="userId" th:value="${userId}">
+                        <button class="btn primary" type="submit">Tandai dibaca</button>
+                    </form>
+
+                    <form class="delete-form"
+                          th:action="@{/notifications/{notificationId}/delete(notificationId=${notification.id})}"
+                          method="post">
+                        <input type="hidden" name="userId" th:value="${userId}">
+                        <button class="btn ghost" type="submit">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>
