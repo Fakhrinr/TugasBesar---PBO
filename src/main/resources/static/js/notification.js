@@ -1,68 +1,218 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.querySelector("#notificationSearch");
-    const filterButtons = document.querySelectorAll(".filter-tab");
-    const cards = Array.from(document.querySelectorAll(".notification-card"));
-    const clientEmpty = document.querySelector(".client-empty");
-    const serverEmpty = document.querySelector(".server-empty");
-    const flashes = document.querySelectorAll(".flash");
-    let activeFilter = "all";
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("notificationSearch");
+    const typeFilter = document.getElementById("notificationTypeFilter");
+    const statusFilter = document.getElementById("notificationStatusFilter");
 
-    function normalize(value) {
-        return (value || "").toString().toLowerCase();
+    const notificationCards = Array.from(
+        document.querySelectorAll(".notification-card")
+    );
+
+    const filterEmptyState =
+        document.getElementById("filterEmptyState");
+
+    /**
+     * Mengubah createdAt menjadi:
+     * "Just now", "5 minutes ago", "3 hours ago", dan sebagainya.
+     */
+    function updateRelativeTimes() {
+        const timeElements = document.querySelectorAll(".time-ago");
+
+        timeElements.forEach((element) => {
+            const createdAtValue =
+                element.dataset.createdAt;
+
+            if (!createdAtValue) {
+                return;
+            }
+
+            const createdAt = new Date(createdAtValue);
+
+            if (Number.isNaN(createdAt.getTime())) {
+                return;
+            }
+
+            const now = new Date();
+            const differenceMilliseconds =
+                now.getTime() - createdAt.getTime();
+
+            const differenceSeconds =
+                Math.floor(differenceMilliseconds / 1000);
+
+            const differenceMinutes =
+                Math.floor(differenceSeconds / 60);
+
+            const differenceHours =
+                Math.floor(differenceMinutes / 60);
+
+            const differenceDays =
+                Math.floor(differenceHours / 24);
+
+            if (differenceSeconds < 60) {
+                element.textContent = "Just now";
+                return;
+            }
+
+            if (differenceMinutes < 60) {
+                element.textContent =
+                    `${differenceMinutes} minute${differenceMinutes > 1 ? "s" : ""} ago`;
+
+                return;
+            }
+
+            if (differenceHours < 24) {
+                element.textContent =
+                    `${differenceHours} hour${differenceHours > 1 ? "s" : ""} ago`;
+
+                return;
+            }
+
+            if (differenceDays < 7) {
+                element.textContent =
+                    `${differenceDays} day${differenceDays > 1 ? "s" : ""} ago`;
+
+                return;
+            }
+
+            element.textContent =
+                createdAt.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+        });
     }
 
-    function applyFilters() {
-        const query = normalize(searchInput ? searchInput.value : "");
+    /**
+     * Search dan filter notifikasi.
+     */
+    function filterNotifications() {
+        const searchKeyword =
+            searchInput?.value.trim().toLowerCase() ?? "";
+
+        const selectedType =
+            typeFilter?.value ?? "ALL";
+
+        const selectedStatus =
+            statusFilter?.value ?? "ALL";
+
         let visibleCount = 0;
 
-        cards.forEach(function (card) {
-            const state = card.dataset.state;
-            const haystack = normalize(card.dataset.type + " " + card.dataset.message);
-            const matchesState = activeFilter === "all" || state === activeFilter;
-            const matchesSearch = query === "" || haystack.includes(query);
-            const shouldShow = matchesState && matchesSearch;
+        notificationCards.forEach((card) => {
+            const message =
+                (card.dataset.message ?? "").toLowerCase();
 
-            card.classList.toggle("is-hidden", !shouldShow);
+            const type =
+                card.dataset.type ?? "";
+
+            const status =
+                card.dataset.status ?? "";
+
+            const matchesSearch =
+                message.includes(searchKeyword) ||
+                type.toLowerCase().includes(searchKeyword);
+
+            const matchesType =
+                selectedType === "ALL" ||
+                type === selectedType;
+
+            const matchesStatus =
+                selectedStatus === "ALL" ||
+                status === selectedStatus;
+
+            const shouldShow =
+                matchesSearch &&
+                matchesType &&
+                matchesStatus;
+
+            card.style.display = shouldShow
+                ? "flex"
+                : "none";
 
             if (shouldShow) {
-                visibleCount += 1;
+                visibleCount++;
             }
         });
 
-        if (clientEmpty && !serverEmpty) {
-            clientEmpty.hidden = visibleCount > 0;
+        if (filterEmptyState) {
+            filterEmptyState.style.display =
+                notificationCards.length > 0 &&
+                visibleCount === 0
+                    ? "grid"
+                    : "none";
         }
     }
 
-    if (searchInput) {
-        searchInput.addEventListener("input", applyFilters);
+    /**
+     * Konfirmasi sebelum menghapus notifikasi.
+     */
+    function initializeDeleteConfirmation() {
+        const deleteForms =
+            document.querySelectorAll(".delete-form");
+
+        deleteForms.forEach((form) => {
+            form.addEventListener("submit", (event) => {
+                const isConfirmed = window.confirm(
+                    "Are you sure you want to delete this notification?"
+                );
+
+                if (!isConfirmed) {
+                    event.preventDefault();
+                }
+            });
+        });
     }
 
-    filterButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            activeFilter = button.dataset.filter;
+    /**
+     * Menutup flash message.
+     */
+    function initializeAlerts() {
+        const alerts =
+            document.querySelectorAll(".alert");
 
-            filterButtons.forEach(function (item) {
-                item.classList.remove("active");
-            });
+        alerts.forEach((alert) => {
+            const closeButton =
+                alert.querySelector(".alert-close");
 
-            button.classList.add("active");
-            applyFilters();
+            const hideAlert = () => {
+                alert.classList.add("hide");
+
+                window.setTimeout(() => {
+                    alert.remove();
+                }, 250);
+            };
+
+            closeButton?.addEventListener(
+                "click",
+                hideAlert
+            );
+
+            window.setTimeout(hideAlert, 5000);
         });
-    });
+    }
 
-    document.querySelectorAll(".delete-form").forEach(function (form) {
-        form.addEventListener("submit", function (event) {
-            const confirmed = window.confirm("Hapus notifikasi ini?");
-            if (!confirmed) {
-                event.preventDefault();
-            }
-        });
-    });
+    searchInput?.addEventListener(
+        "input",
+        filterNotifications
+    );
 
-    flashes.forEach(function (flash) {
-        window.setTimeout(function () {
-            flash.style.display = "none";
-        }, 3500);
-    });
+    typeFilter?.addEventListener(
+        "change",
+        filterNotifications
+    );
+
+    statusFilter?.addEventListener(
+        "change",
+        filterNotifications
+    );
+
+    updateRelativeTimes();
+    initializeDeleteConfirmation();
+    initializeAlerts();
+
+    window.setInterval(
+        updateRelativeTimes,
+        60000
+    );
 });
