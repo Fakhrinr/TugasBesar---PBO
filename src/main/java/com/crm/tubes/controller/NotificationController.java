@@ -52,23 +52,6 @@ public class NotificationController {
         return "notification/list";
     }
 
-    @GetMapping("/user/{userId}")
-    public String showNotifications(
-            @PathVariable Integer userId,
-            HttpSession session
-    ) {
-        UserModel loggedUser = authService.getLoggedUser(session);
-        if (loggedUser == null) {
-            return "redirect:/login";
-        }
-
-        if (!loggedUser.getId().equals(userId)) {
-            return "redirect:/notifications";
-        }
-
-        return "redirect:/notifications";
-    }
-
     @PostMapping("/{notificationId}/read")
     public String markAsRead(
             @PathVariable Integer notificationId,
