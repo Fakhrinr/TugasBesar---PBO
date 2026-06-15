@@ -2,6 +2,7 @@ package com.crm.tubes.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -114,6 +115,32 @@ public class UserRepository {
         jdbcTemplate.update(
             "UPDATE user SET password = ? WHERE id = ?",
             newPassword, userId);
+    }
+
+    public long countByRole(UserModel.Role role) {
+    Long result = jdbcTemplate.queryForObject(
+        "SELECT COUNT(*) FROM user WHERE role = ?",
+        Long.class,
+        role.name()
+    );
+    return result == null ? 0 : result;
+    }
+
+    public List<UserModel> findByRole(UserModel.Role role) {
+    return jdbcTemplate.query(
+        "SELECT * FROM user WHERE role = ?",
+        (rs, rowNum) -> {
+            UserModel u = new UserModel();
+            u.setId(rs.getInt("id"));
+            u.setName(rs.getString("name"));
+            u.setEmail(rs.getString("email"));
+            u.setPassword(rs.getString("password"));
+            u.setRole(UserModel.Role.valueOf(rs.getString("role")));
+            u.setStatus(rs.getBoolean("status"));
+            return u;
+        },
+        role.name()
+    );
     }
 
     public void updateStatus(Integer userId, Boolean status) {

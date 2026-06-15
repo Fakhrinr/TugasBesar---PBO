@@ -1,0 +1,86 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8ecf4 0%, #dce3f0 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 24px 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+  padding: 44px 40px 40px;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+}
+
+h1 { font-size: 1.75rem; font-weight: 700; text-align: center; color: #111; margin-bottom: 8px; }
+.subtitle { text-align: center; color: #888; font-size: 0.875rem; margin-bottom: 28px; }
+
+/* Alert — hanya muncul kalau ada konten (th:if di HTML) */
+.alert-error {
+  background: #fff0f0; border: 1px solid #fca5a5;
+  color: #b91c1c; border-radius: 10px;
+  padding: 10px 14px; font-size: 0.85rem; margin-bottom: 16px;
+}
+.alert-success {
+  background: #f0fdf4; border: 1px solid #86efac;
+  color: #166534; border-radius: 10px;
+  padding: 10px 14px; font-size: 0.85rem; margin-bottom: 16px;
+}
+
+.field { margin-bottom: 12px; }
+
+input {
+  width: 100%; padding: 14px 16px;
+  border: 1.5px solid #e0e0e0; border-radius: 12px;
+  font-size: 0.95rem; outline: none;
+  transition: border-color .2s;
+  background: #fafafa; color: #111;
+}
+input:focus { border-color: #111; background: #fff; }
+input::placeholder { color: #bbb; }
+
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 44px; }
+.eye-btn {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: #555; padding: 0; display: flex; align-items: center;
+}
+.eye-btn svg { width: 20px; height: 20px; }
+.eye-btn.active { opacity: 0.45; }
+
+.forgot-row { text-align: right; margin: 2px 0 18px; }
+.forgot-row a { font-size: 0.85rem; color: #555; text-decoration: none; }
+.forgot-row a:hover { color: #111; }
+
+.btn-primary {
+  width: 100%; padding: 15px; margin-top: 6px;
+  background: #111; color: #fff;
+  border: none; border-radius: 12px;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
+  transition: background .2s;
+}
+.btn-primary:hover { background: #333; }
+
+.footer-text { text-align: center; margin-top: 20px; font-size: 0.875rem; color: #666; }
+.footer-text a { color: #3b82f6; text-decoration: none; font-weight: 500; }
+.footer-text a:hover { text-decoration: underline; }
+
+/* Back button (forgot & change password) */
+.back-btn {
+  position: absolute; top: 28px; left: 28px;
+  background: none; border: none; cursor: pointer;
+  color: #111; padding: 4px; display: flex; align-items: center;
+  text-decoration: none;
+}
+.back-btn svg { width: 22px; height: 22px; }
+.back-btn:hover { opacity: 0.6; }
+.card-with-back h1 { margin-top: 12px; }

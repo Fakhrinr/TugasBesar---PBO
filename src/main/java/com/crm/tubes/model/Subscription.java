@@ -5,18 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
-/**
- * Subscription = model untuk data langganan internet customer.
- *
- * Lombok annotations:
- * @Data           → otomatis generate getter, setter, toString, equals, hashCode
- * @NoArgsConstructor  → otomatis bikin constructor kosong
- * @AllArgsConstructor → otomatis bikin constructor semua field
- *
- * Aggregation dengan CustomerModel:
- * Subscription <>── CustomerModel
- * (CustomerModel bisa exist tanpa Subscription)
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
