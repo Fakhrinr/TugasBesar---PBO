@@ -16,7 +16,6 @@ public class UserModel {
     private Role    role;
     private Boolean status;
 
-    // populated after login for CUSTOMER role
     private Integer customerId;
 
     public enum Role {
