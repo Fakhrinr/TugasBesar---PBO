@@ -46,23 +46,10 @@ public class SubscriptionController {
         // session.setAttribute("loggedUser", user)
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
 
-        /**  Kalau belum login → redirect ke halaman login
         if (loggedUser == null) {
             return "redirect:/auth/login";
         }
-        */
        
-        // GANTI SEMENTARA buat testing
-if (loggedUser == null) {
-    // hardcode user admin buat testing
-    UserModel testUser = new UserModel();
-    testUser.setId(1);
-    testUser.setName("Admin CRM");
-    testUser.setRole(UserModel.Role.ADMIN);
-    session.setAttribute("loggedUser", testUser);
-    session.setAttribute("loggedUserRole", UserModel.Role.ADMIN);
-    loggedUser = testUser;
-}
 
         // ── Step 2: Kirim data user ke HTML ──────────────────────────────
         // Untuk nampilin nama/avatar di topbar
