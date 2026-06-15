@@ -132,7 +132,7 @@ function calculateDashboardStats() {
 
     if (revenueElement)
         revenueElement.textContent =
-            "Rp " + revenue.toLocaleString("id-ID");
+            "$ " + revenue.toLocaleString("en-US");
 }
 
 /* =========================================
@@ -153,7 +153,7 @@ function initializeForms() {
             let message = "Are you sure?";
 
             if (action.includes("late-fee")) {
-                message = "Apply late fee Rp 50.000 to this invoice?";
+                message = "Apply late fee $ 5 to this invoice?";
             }
             else if (action.includes("pay")) {
                 message = "Mark this invoice as PAID?";
