@@ -28,7 +28,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("invoices", invoiceService.getAllInvoices());
@@ -46,7 +46,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         Invoice invoice = invoiceService.getInvoiceById(id);
 
@@ -66,7 +66,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         invoiceService.createInvoice(invoice);
 
@@ -81,7 +81,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         invoiceService.markAsPaid(id);
 
@@ -96,7 +96,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         // Fix: late fee yang wajar = Rp 50.000
         invoiceService.applyLateFee(id, BigDecimal.valueOf(50000));
@@ -112,7 +112,7 @@ public class InvoiceController {
 
         // Cek session login
         UserModel loggedUser = (UserModel) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/auth/login";
+        if (loggedUser == null) return "redirect:/login";
 
         invoiceService.checkInvoiceStatus(id);
 

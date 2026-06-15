@@ -15,6 +15,7 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 
 </head>
 
@@ -24,78 +25,15 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-
-    <div class="s-brand">
-        <i class="bi bi-grid-fill"></i>
-    </div>
-
-    <a th:href="@{/dashboard}"
-       class="s-link"
-       title="Dashboard">
-
-        <i class="bi bi-grid"></i>
-
-    </a>
-
-    <a th:href="@{/customer}"
-       class="s-link"
-       title="Customer">
-
-        <i class="bi bi-people"></i>
-
-    </a>
-
-    <a th:href="@{/billing}"
-       class="s-link"
-       title="Billing">
-
-        <i class="bi bi-credit-card"></i>
-
-    </a>
-
-    <a th:href="@{/invoices}"
-       class="s-link active"
-       title="Invoice">
-
-        <i class="bi bi-receipt"></i>
-
-    </a>
-
-    <a th:href="@{/subscription}"
-       class="s-link"
-       title="Subscription">
-
-        <i class="bi bi-calendar-event"></i>
-
-    </a>
-
-    <a th:href="@{/ticket}"
-       class="s-link"
-       title="Support">
-
-        <i class="bi bi-cloud-arrow-up"></i>
-
-    </a>
-
-    <hr>
-
-    <a th:href="@{/notification}"
-       class="s-link"
-       title="Notification">
-
-        <i class="bi bi-bell"></i>
-
-    </a>
-
-    <a th:href="@{/auth/logout}"
-       class="s-link s-logout"
-       title="Logout">
-
-        <i class="bi bi-box-arrow-right"></i>
-
-    </a>
-
-</aside>
+        <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
+            <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+            <a th:href="@{/billing}"      class="s-link active" title="Billing">      <i class="bi bi-receipt"></i></a>
+            <a th:href="@{/subscription}" class="s-link"        title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+            <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+            <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+            <hr/>
+            <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+    </aside>
 
     <!-- MAIN CONTENT -->
     <main class="content">
