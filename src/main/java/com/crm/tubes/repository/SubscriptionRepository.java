@@ -32,7 +32,7 @@ public class SubscriptionRepository {
 
         // Build CustomerModel dari hasil JOIN dengan tabel user & customer
         CustomerModel customer = new CustomerModel();
-        customer.setIdUser(rs.getInt("customer_id"));
+        customer.setId(rs.getInt("customer_id"));
         customer.setName(rs.getString("customer_name"));
         customer.setPhone(rs.getString("phone"));
         customer.setAddress(rs.getString("address"));

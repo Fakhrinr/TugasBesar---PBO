@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.crm.tubes.model.CustomerModel;
 import com.crm.tubes.model.StaffModel;
+import com.crm.tubes.model.TechnicianModel;
 import com.crm.tubes.model.UserModel;
 
 import lombok.RequiredArgsConstructor;
@@ -20,233 +21,104 @@ public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    // ── INSERT user + subtype ────────────────────────────────
+
     public Integer registerUser(UserModel user) {
 
-        Integer userId = save(user);
+        Integer userId = saveUser(user);
 
-        if (user instanceof CustomerModel customer) {
+        if (user instanceof CustomerModel c) {
+            saveCustomer(userId, c.getAddress(), c.getPhone());
 
-            saveCustomer(
-                    userId,
-                    customer.getAddress(),
-                    customer.getPhone()
-            );
+        } else if (user instanceof TechnicianModel t) {
+            saveTechnician(userId, t.getArea());
 
-        } else if (user instanceof StaffModel staff) {
-
-            saveStaff(
-                    userId,
-                    staff.getEmployeeId()
-            );
+        } else if (user instanceof StaffModel s) {
+            saveStaff(userId, s.getEmployeeId());
         }
 
         return userId;
     }
 
-    public Integer save(UserModel user) {
+    private Integer saveUser(UserModel user) {
 
-        String sql = """
-                INSERT INTO user
-                (name,email,password,role,status)
-                VALUES (?,?,?,?,?)
-                """;
+        String sql = "INSERT INTO user (name,email,password,role,status) VALUES (?,?,?,?,?)";
 
-        KeyHolder keyHolder =
-                new GeneratedKeyHolder();
+        KeyHolder kh = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-
-            PreparedStatement ps =
-                    connection.prepareStatement(
-                            sql,
-                            Statement.RETURN_GENERATED_KEYS
-                    );
-
-            ps.setString(
-                    1,
-                    user.getName()
-            );
-
-            ps.setString(
-                    2,
-                    user.getEmail()
-            );
-
-            ps.setString(
-                    3,
-                    user.getPassword()
-            );
-
-            ps.setString(
-                    4,
-                    user.getRole().name()
-            );
-
-            ps.setBoolean(
-                    5,
-                    user.getStatus()
-            );
-
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getRole().name());
+            ps.setBoolean(5, Boolean.TRUE.equals(user.getStatus()));
             return ps;
+        }, kh);
 
-        }, keyHolder);
-
-        Number key =
-                keyHolder.getKey();
-
-        if (key == null) {
-
-            throw new RuntimeException(
-                    "Gagal mendapatkan ID user"
-            );
-        }
-
+        Number key = kh.getKey();
+        if (key == null) throw new RuntimeException("Gagal mendapatkan ID user");
         return key.intValue();
     }
 
-    public void saveCustomer(
-            Integer userId,
-            String address,
-            String phone
-    ) {
-
-        String sql = """
-                INSERT INTO customer
-                (user_id,address,phone)
-                VALUES (?,?,?)
-                """;
-
+    public void saveCustomer(Integer userId, String address, String phone) {
         jdbcTemplate.update(
-                sql,
-                userId,
-                address,
-                phone
-        );
+            "INSERT INTO customer (user_id,address,phone) VALUES (?,?,?)",
+            userId, address, phone);
     }
 
-    public void saveStaff(
-            Integer userId,
-            String employeeId
-    ) {
-
-        String sql = """
-                INSERT INTO staff
-                (user_id,employee_id)
-                VALUES (?,?)
-                """;
-
+    public void saveStaff(Integer userId, String employeeId) {
         jdbcTemplate.update(
-                sql,
-                userId,
-                employeeId
-        );
+            "INSERT INTO staff (user_id,employee_id) VALUES (?,?)",
+            userId, employeeId);
     }
 
-    public UserModel findByEmail(
-            String email
-    ) {
+    public void saveTechnician(Integer userId, String area) {
+        jdbcTemplate.update(
+            "INSERT INTO technician (user_id,area) VALUES (?,?)",
+            userId, area);
+    }
 
-        String sql = """
-                SELECT *
-                FROM user
-                WHERE email = ?
-                """;
+    // ── SELECT ───────────────────────────────────────────────
+
+    public UserModel findByEmail(String email) {
+
+        String sql = "SELECT * FROM user WHERE email = ?";
+
+        return jdbcTemplate.query(sql, rs -> {
+            if (!rs.next()) return null;
+
+            UserModel u = new UserModel();
+            u.setId(rs.getInt("id"));
+            u.setName(rs.getString("name"));
+            u.setEmail(rs.getString("email"));
+            u.setPassword(rs.getString("password"));
+            u.setRole(UserModel.Role.valueOf(rs.getString("role")));
+            u.setStatus(rs.getBoolean("status"));
+            return u;
+        }, email);
+    }
+
+    /** Returns customer.id for a given user.id, or null if not a customer. */
+    public Integer findCustomerIdByUserId(Integer userId) {
 
         return jdbcTemplate.query(
-                sql,
-                rs -> {
-
-                    if (!rs.next()) {
-                        return null;
-                    }
-
-                    UserModel user =
-                            new UserModel();
-
-                    user.setIdUser(
-                            rs.getInt("id")
-                    );
-
-                    user.setName(
-                            rs.getString("name")
-                    );
-
-                    user.setEmail(
-                            rs.getString("email")
-                    );
-
-                    user.setPassword(
-                            rs.getString("password")
-                    );
-
-                    user.setRole(
-                            UserModel.Role.valueOf(
-                                    rs.getString("role")
-                            )
-                    );
-
-                    user.setStatus(
-                            rs.getBoolean("status")
-                    );
-
-                    return user;
-                },
-                email
-        );
+            "SELECT id FROM customer WHERE user_id = ?",
+            rs -> rs.next() ? rs.getInt("id") : null,
+            userId);
     }
 
-    public Integer findCustomerIdByUserId(
-        Integer userId
-        ) {
+    // ── UPDATE ───────────────────────────────────────────────
 
-        String sql = """
-            SELECT id
-            FROM customer
-            WHERE user_id = ?
-            """;
-
-        return jdbcTemplate.query(
-            sql,
-            rs -> rs.next()
-                    ? rs.getInt("id")
-                    : null,
-            userId
-        );
-        }
-
-    public void updatePassword(
-            String email,
-            String password
-    ) {
-
-        String sql = """
-                UPDATE user
-                SET password = ?
-                WHERE email = ?
-                """;
-
+    public void updatePassword(Integer userId, String newPassword) {
         jdbcTemplate.update(
-                sql,
-                password,
-                email
-        );
+            "UPDATE user SET password = ? WHERE id = ?",
+            newPassword, userId);
     }
 
-    public void updateStatus(
-            Integer userId,
-            Boolean status
-    ) {
-
-        String sql = """
-                UPDATE user
-                SET status = ?
-                WHERE id = ?
-                """;
-
+    public void updateStatus(Integer userId, Boolean status) {
         jdbcTemplate.update(
-                sql,
-                status,
-                userId
-        );
+            "UPDATE user SET status = ? WHERE id = ?",
+            status, userId);
     }
 }

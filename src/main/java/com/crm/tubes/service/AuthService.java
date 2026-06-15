@@ -7,7 +7,6 @@ import com.crm.tubes.model.UserModel;
 import com.crm.tubes.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -17,256 +16,141 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
-    // ==================================================
-    // REGISTER
-    // ==================================================
+    private static final String SESSION_KEY = "loggedUser";
 
-    public RegisterResponse register(
-            RegisterRequest request
-    ) {
+    // ── LOGIN ────────────────────────────────────────────────
 
-        UserModel existingUser =
-                userRepository.findByEmail(
-                        request.getEmail()
-                );
+    public UserModel login(LoginRequest req, HttpSession session) {
 
-        if (existingUser != null) {
+        validate(req.getEmail(),   "Email wajib diisi");
+        validate(req.getPassword(), "Password wajib diisi");
 
-            throw new RuntimeException(
-                    "Email sudah digunakan"
-            );
+        UserModel user = userRepository.findByEmail(req.getEmail());
+
+        if (user == null)
+            throw new RuntimeException("Email tidak ditemukan");
+
+        if (!user.getPassword().equals(req.getPassword()))
+            throw new RuntimeException("Password salah");
+
+        if (!Boolean.TRUE.equals(user.getStatus()))
+            throw new RuntimeException("Akun tidak aktif");
+
+        // Attach customerId if role is CUSTOMER
+        if (user.getRole() == UserModel.Role.CUSTOMER) {
+            Integer customerId = userRepository.findCustomerIdByUserId(user.getId());
+            user.setCustomerId(customerId);
         }
 
-        CustomerModel customer =
-                new CustomerModel();
+        session.setAttribute(SESSION_KEY, user);
+        return user;
+    }
 
-        customer.setName(
-                request.getName()
-        );
+    // ── REGISTER (CUSTOMER only – staff added via DB) ────────
 
-        customer.setEmail(
-                request.getEmail()
-        );
+    public Integer register(RegisterRequest req) {
 
-        customer.setPassword(
-                request.getPassword()
-        );
+        validate(req.getName(),     "Nama wajib diisi");
+        validate(req.getEmail(),    "Email wajib diisi");
+        validate(req.getPassword(), "Password wajib diisi");
+        validate(req.getAddress(),  "Alamat wajib diisi");
+        validate(req.getPhone(),    "Nomor telepon wajib diisi");
 
-        customer.setAddress(
-                request.getAddress()
-        );
+        if (userRepository.findByEmail(req.getEmail()) != null)
+            throw new RuntimeException("Email sudah digunakan");
 
-        customer.setPhone(
-                request.getPhone()
-        );
-
-        customer.setRole(
-                UserModel.Role.CUSTOMER
-        );
-
+        CustomerModel customer = new CustomerModel();
+        customer.setName(req.getName());
+        customer.setEmail(req.getEmail());
+        customer.setPassword(req.getPassword());
+        customer.setAddress(req.getAddress());
+        customer.setPhone(req.getPhone());
+        customer.setRole(UserModel.Role.CUSTOMER);
         customer.setStatus(true);
 
-        Integer userId =
-                userRepository.registerUser(
-                        customer
-                );
-
-        return new RegisterResponse(
-                userId,
-                "Registrasi berhasil"
-        );
+        return userRepository.registerUser(customer);
     }
 
-    // ==================================================
-    // LOGIN
-    // ==================================================
+    // ── VALIDATE EMAIL (for forgot-password step) ────────────
 
-    public LoginResponse login(
-            LoginRequest request,
-            HttpSession session
-    ) {
-
-        UserModel user =
-                userRepository.findByEmail(
-                        request.getEmail()
-                );
-
-        if (user == null) {
-
-            throw new RuntimeException(
-                    "User tidak ditemukan"
-            );
-        }
-
-        if (!user.getStatus()) {
-
-            throw new RuntimeException(
-                    "Akun tidak aktif"
-            );
-        }
-
-        if (!user.getPassword().equals(
-                request.getPassword()
-        )) {
-
-            throw new RuntimeException(
-                    "Password salah"
-            );
-        }
-
-        // ==========================================
-        // Integrasi Subscription
-        // ==========================================
-
-        if (user.getRole() == UserModel.Role.CUSTOMER) {
-
-            Integer customerId =
-                    userRepository.findCustomerIdByUserId(
-                            user.getIdUser()
-                    );
-
-            user.setCustomerId(
-                    customerId
-            );
-        }
-
-        // ==========================================
-        // Simpan User ke Session
-        // ==========================================
-
-        session.setAttribute(
-                "loggedUser",
-                user
-        );
-
-        session.setAttribute(
-                "loggedUserId",
-                user.getIdUser()
-        );
-
-        session.setAttribute(
-                "loggedUserName",
-                user.getName()
-        );
-
-        session.setAttribute(
-                "loggedUserEmail",
-                user.getEmail()
-        );
-
-        session.setAttribute(
-                "loggedUserRole",
-                user.getRole()
-        );
-
-        return new LoginResponse(
-                user.getIdUser(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getStatus()
-        );
+    public void validateEmailExists(String email) {
+        validate(email, "Email wajib diisi");
+        if (userRepository.findByEmail(email) == null)
+            throw new RuntimeException("Email tidak ditemukan");
     }
 
-    // ==================================================
-    // LOGOUT
-    // ==================================================
+    // ── RESET PASSWORD ───────────────────────────────────────
 
-    public void logout(
-            HttpSession session
-    ) {
+    public void resetPassword(ResetPasswordRequest req) {
 
-        if (session != null) {
+        validate(req.getEmail(),       "Email wajib diisi");
+        validate(req.getNewPassword(), "Password baru wajib diisi");
 
-            session.invalidate();
-        }
+        UserModel user = userRepository.findByEmail(req.getEmail());
+        if (user == null)
+            throw new RuntimeException("Email tidak ditemukan");
+
+        userRepository.updatePassword(user.getId(), req.getNewPassword());
     }
 
-    // ==================================================
-    // RESET PASSWORD
-    // ==================================================
+    // ── LOGOUT ───────────────────────────────────────────────
 
-    public void resetPassword(
-            ResetPasswordRequest request
-    ) {
-
-        UserModel user =
-                userRepository.findByEmail(
-                        request.getEmail()
-                );
-
-        if (user == null) {
-
-            throw new RuntimeException(
-                    "User tidak ditemukan"
-            );
-        }
-
-        userRepository.updatePassword(
-                request.getEmail(),
-                request.getNewPassword()
-        );
+    public void logout(HttpSession session) {
+        session.invalidate();
     }
 
-    // ==================================================
-    // REQUEST DTO
-    // ==================================================
+    // ── SESSION HELPERS ──────────────────────────────────────
+
+    public UserModel getLoggedUser(HttpSession session) {
+        return (UserModel) session.getAttribute(SESSION_KEY);
+    }
+
+    public boolean isLoggedIn(HttpSession session) {
+        return getLoggedUser(session) != null;
+    }
+
+    public boolean isAdmin(HttpSession session) {
+        UserModel u = getLoggedUser(session);
+        return u != null && u.getRole() == UserModel.Role.ADMIN;
+    }
+
+    public boolean isTechnician(HttpSession session) {
+        UserModel u = getLoggedUser(session);
+        return u != null && u.getRole() == UserModel.Role.TEKNISI;
+    }
+
+    public boolean isCustomer(HttpSession session) {
+        UserModel u = getLoggedUser(session);
+        return u != null && u.getRole() == UserModel.Role.CUSTOMER;
+    }
+
+    // ── PRIVATE ──────────────────────────────────────────────
+
+    private void validate(String value, String message) {
+        if (value == null || value.isBlank())
+            throw new RuntimeException(message);
+    }
+
+    // ── DTO ──────────────────────────────────────────────────
+
+    @Data
+    public static class LoginRequest {
+        private String email;
+        private String password;
+    }
 
     @Data
     public static class RegisterRequest {
-
         private String name;
-
         private String email;
-
         private String password;
-
         private String address;
-
         private String phone;
     }
 
     @Data
-    public static class LoginRequest {
-
-        private String email;
-
-        private String password;
-    }
-
-    @Data
     public static class ResetPasswordRequest {
-
         private String email;
-
         private String newPassword;
-    }
-
-    // ==================================================
-    // RESPONSE DTO
-    // ==================================================
-
-    @Data
-    @AllArgsConstructor
-    public static class RegisterResponse {
-
-        private Integer id;
-
-        private String message;
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class LoginResponse {
-
-        private Integer id;
-
-        private String name;
-
-        private String email;
-
-        private UserModel.Role role;
-
-        private Boolean status;
     }
 }

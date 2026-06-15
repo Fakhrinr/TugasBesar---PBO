@@ -51,6 +51,7 @@ public class SubscriptionController {
             return "redirect:/auth/login";
         }
 
+
         // ── Step 2: Kirim data user ke HTML ──────────────────────────────
         // Untuk nampilin nama/avatar di topbar
         model.addAttribute("loggedUser", loggedUser);
