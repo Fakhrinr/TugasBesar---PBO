@@ -1,4 +1,4 @@
-/* package com.crm.tubes.controller;
+package com.crm.tubes.controller;
 
 import com.crm.tubes.model.UserModel;
 import com.crm.tubes.service.AuthService;
@@ -20,7 +20,6 @@ public class DashboardController {
 
     @GetMapping
     public String dashboard(HttpSession session, Model model) {
-
         if (!authService.isLoggedIn(session)) {
             return "redirect:/login";
         }
@@ -31,11 +30,11 @@ public class DashboardController {
         return switch (user.getRole()) {
             case ADMIN    -> adminDashboard(model);
             case TEKNISI  -> teknisiDashboard(user, model);
-            case CUSTOMER -> customerDashboard(user, model);
+            case CUSTOMER -> "redirect:/subscription"; // customer lihat subscription page
         };
     }
 
-    // ────────────────────────────────────────────
+    // ── Private builders ──────────────────────────────────────────────────────
 
     private String adminDashboard(Model model) {
         model.addAttribute("data", dashboardService.getAdminData());
@@ -46,10 +45,4 @@ public class DashboardController {
         model.addAttribute("data", dashboardService.getTeknisiData(user));
         return "dashboard/teknisi";
     }
-
-    private String customerDashboard(UserModel user, Model model) {
-        model.addAttribute("data", dashboardService.getCustomerData(user));
-        return "dashboard/customer";
-    }
 }
-*/

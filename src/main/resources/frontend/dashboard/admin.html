@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard – CRM Tubes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+        <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
+        <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+        <a th:href="@{/billing}"      class="s-link active"        title="Billing">      <i class="bi bi-receipt"></i></a>
+        <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+        <a th:href="@{/notification}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <hr/>
+        <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+    </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon" id="menuToggle" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+        <div>
+          <div class="page-title">Dashboard Admin</div>
+          <div class="page-subtitle">Selamat datang, <span th:text="${user?.name ?: 'Admin'}">Admin</span></div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a th:href="@{/notifications/user/{id}(id=${user?.id})}" class="btn-icon">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zM10 18a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3z"/></svg>
+          <span class="notif-dot"></span>
+        </a>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Flash messages -->
+      <div class="alert alert-success" th:if="${successMsg}" th:text="${successMsg}"></div>
+      <div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
+
+      <!-- ── Stat Cards ──────────────────────────────────── -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Total Customer</span>
+            <div class="stat-icon blue">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm8 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-4.07 9c.046-.327.07-.66.07-1a6.97 6.97 0 0 0-1.5-4.33A5 5 0 0 1 19 15v1h-6.07zM6 11a5 5 0 0 1 5 5v1H1v-1a5 5 0 0 1 5-5z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.totalCustomer ?: 0}">0</div>
+          <div class="stat-footer">Customer terdaftar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Total Teknisi</span>
+            <div class="stat-icon green">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 0 1-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 0 1 .947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 0 1 2.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 0 1 2.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 0 1 .947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 0 1-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 0 1-2.287-.947zM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.totalTeknisi ?: 0}">0</div>
+          <div class="stat-footer">Teknisi aktif</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Subscription Aktif</span>
+            <div class="stat-icon cyan">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 .379 1.388 3.066 3.066 0 0 0-.723 4.764l.028.028a3.073 3.073 0 0 0 4.14.504 3.066 3.066 0 0 0 4.764-.722 3.066 3.066 0 0 0 1.388-.38 3.066 3.066 0 0 0 0-5.858 3.066 3.066 0 0 0-1.388-.379 3.066 3.066 0 0 0-4.764-.723 3.066 3.066 0 0 0-4.14.503l-.028.029a3.066 3.066 0 0 0-.379 1.388z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.totalSubscriptionAktif ?: 0}">0</div>
+          <div class="stat-footer">Status ACTIVE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Invoice Belum Bayar</span>
+            <div class="stat-icon yellow">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4zm3 5a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H7z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.totalInvoiceBelumBayar ?: 0}">0</div>
+          <div class="stat-footer">Perlu perhatian</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Ticket Open</span>
+            <div class="stat-icon red">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V5z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.openTicketCount ?: 0}">0</div>
+          <div class="stat-footer">Menunggu penanganan</div>
+        </div>
+      </div>
+
+      <!-- ── Row: Recent Tickets + Expiring Subscriptions ── -->
+      <div class="section-row">
+        <!-- Recent Tickets -->
+        <div class="card section-col-2">
+          <div class="card-header">
+            <span class="card-title">Recent Support Tickets</span>
+            <a th:href="@{/tickets}" class="link">Lihat Semua →</a>
+          </div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Judul</th>
+                  <th>Prioritas</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="t : ${data?.recentTickets}" th:if="${data?.recentTickets != null}">
+                  <td style="font-weight:600;color:var(--primary)" th:text="'#TK-' + ${t.id}">#TK-1</td>
+                  <td th:text="${t.title}">Judul Ticket</td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${t.priority == 'HIGH' ? 'badge-high' : (t.priority == 'MEDIUM' ? 'badge-medium' : 'badge-low')}"
+                          th:text="${t.priority}">MEDIUM</span>
+                  </td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${t.status == 'OPEN' ? 'badge-open' : (t.status == 'IN_PROGRESS' ? 'badge-in-progress' : (t.status == 'RESOLVED' ? 'badge-resolved' : 'badge-closed'))}"
+                          th:text="${t.status}">OPEN</span>
+                  </td>
+                  <td>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap">
+                      <!-- Assign Teknisi (jika belum ada teknisi) -->
+                      <button th:if="${t.technicianId == null and t.status == 'OPEN'}"
+                              class="btn btn-sm btn-primary"
+                              th:onclick="'openAssignModal(' + ${t.id} + ', \'' + ${t.title} + '\')'">
+                        Assign
+                      </button>
+                      <!-- Resolve -->
+                      <form th:if="${t.status == 'IN_PROGRESS'}"
+                            th:action="@{/tickets/resolve/{id}(id=${t.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-success">Resolve</button>
+                      </form>
+                      <!-- Close -->
+                      <form th:if="${t.status == 'RESOLVED'}"
+                            th:action="@{/tickets/close/{id}(id=${t.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-ghost">Close</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${data?.recentTickets == null or #lists.isEmpty(data?.recentTickets)}">
+                  <td colspan="5">
+                    <div class="empty-state"><p>Belum ada ticket</p></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Expiring Subscriptions -->
+        <div class="card section-col-1">
+          <div class="card-header">
+            <span class="card-title">Subscription Expiring Soon</span>
+            <a th:href="@{/subscription}" class="link">Lihat →</a>
+          </div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Paket</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="s : ${data?.expiringSubscriptions}" th:if="${data?.expiringSubscriptions != null}">
+                  <td th:text="${s.customer?.name ?: '-'}">Customer</td>
+                  <td th:text="${s.planName}">Paket</td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${s.status?.name() == 'GRACE' ? 'badge-grace' : 'badge-suspended'}"
+                          th:text="${s.status?.name()}">GRACE</span>
+                  </td>
+                </tr>
+                <tr th:if="${data?.expiringSubscriptions == null or #lists.isEmpty(data?.expiringSubscriptions)}">
+                  <td colspan="3">
+                    <div class="empty-state"><p>Tidak ada yang akan expire</p></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Recent Invoices ─────────────────────────────── -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <span class="card-title">Recent Invoices</span>
+          <a th:href="@{/invoices}" class="link">Lihat Semua →</a>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Paket</th>
+                <th>Total</th>
+                <th>Jatuh Tempo</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="inv : ${data?.recentInvoices}" th:if="${data?.recentInvoices != null}">
+                <td style="font-weight:600;color:var(--primary)" th:text="'INV-' + ${inv.id}">INV-1</td>
+                <td th:text="${inv.subscription?.customer?.name ?: '-'}">Customer</td>
+                <td th:text="${inv.subscription?.planName ?: '-'}">Paket</td>
+                <td th:text="'Rp ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">Rp 0</td>
+                <td th:text="${#temporals.format(inv.dueDate, 'dd MMM yyyy')}">01 Jan 2024</td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${inv.status?.name() == 'PAID' ? 'badge-paid' : (inv.status?.name() == 'OVERDUE' ? 'badge-overdue' : (inv.status?.name() == 'OPEN' ? 'badge-open-inv' : 'badge-draft'))}"
+                        th:text="${inv.status?.name()}">OPEN</span>
+                </td>
+                <td>
+                  <div style="display:flex;gap:4px;flex-wrap:wrap">
+                    <!-- Mark as Paid -->
+                    <form th:if="${inv.status?.name() != 'PAID'}"
+                          th:action="@{/invoices/{id}/pay(id=${inv.id})}" method="post" style="display:inline">
+                      <button type="submit" class="btn btn-sm btn-success">Bayar</button>
+                    </form>
+                    <!-- Apply Late Fee -->
+                    <button th:if="${inv.status?.name() == 'OVERDUE'}"
+                            class="btn btn-sm btn-warning"
+                            th:onclick="'openLateFeeModal(' + ${inv.id} + ')'">
+                      Late Fee
+                    </button>
+                    <!-- Refresh Status -->
+                    <form th:action="@{/invoices/{id}/check-status(id=${inv.id})}" method="post" style="display:inline">
+                      <button type="submit" class="btn btn-sm btn-ghost">Refresh</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <tr th:if="${data?.recentInvoices == null or #lists.isEmpty(data?.recentInvoices)}">
+                <td colspan="7">
+                  <div class="empty-state"><p>Belum ada invoice</p></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<!-- ── Modal: Assign Teknisi ─────────────────────────────── -->
+<div class="modal-overlay" id="modalAssign">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Assign Teknisi</span>
+      <button class="modal-close" onclick="closeModal('modalAssign')">×</button>
+    </div>
+    <form th:action="@{/tickets/assign}" method="post">
+      <div class="modal-body">
+        <p style="color:var(--gray-500);margin-bottom:16px">
+          Ticket: <strong id="assignTicketTitle">-</strong>
+        </p>
+        <input type="hidden" id="assignTicketId" name="ticketId"/>
+        <div class="form-group">
+          <label>Pilih Teknisi</label>
+          <select name="technicianId" required>
+            <option value="">-- Pilih Teknisi --</option>
+            <option th:each="tek : ${data?.teknisiList}"
+                    th:value="${tek.id}"
+                    th:text="${tek.name}">Teknisi</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalAssign')">Batal</button>
+        <button type="submit" class="btn btn-primary">Assign</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Late Fee ───────────────────────────────────── -->
+<div class="modal-overlay" id="modalLateFee">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Terapkan Late Fee</span>
+      <button class="modal-close" onclick="closeModal('modalLateFee')">×</button>
+    </div>
+    <form th:action="@{/invoices/{id}/late-fee(id=0)}" id="lateFeeForm" method="post">
+      <div class="modal-body">
+        <p style="color:var(--gray-500);margin-bottom:4px">
+          Late fee standar Rp 50.000 akan ditambahkan ke invoice.
+        </p>
+        <input type="hidden" id="lateFeeInvoiceId" name="id"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalLateFee')">Batal</button>
+        <button type="submit" class="btn btn-warning">Terapkan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+<script>
+  // Fix late fee form action with actual invoice ID
+  document.getElementById('lateFeeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const id = document.getElementById('lateFeeInvoiceId').value;
+    this.action = '/invoices/' + id + '/late-fee';
+    this.submit();
+  });
+</script>
+</body>
+</html>
