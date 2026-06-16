@@ -22,6 +22,10 @@ public class TicketService {
         return ticketRepository.findById(id);
     }
 
+    public List<TicketModel> getTicketsByTechnicianId(int technicianId) {
+        return ticketRepository.findByTechnicianId(technicianId);
+    }
+
     public void createTicket(TicketModel ticket) {
 
         if (ticket.getStatus() == null || ticket.getStatus().isEmpty()) {

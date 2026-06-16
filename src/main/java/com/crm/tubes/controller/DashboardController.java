@@ -33,7 +33,7 @@ public class DashboardController {
         return switch (user.getRole()) {
             case ADMIN    -> adminDashboard(model);
             case TEKNISI  -> teknisiDashboard(user, model);
-            case CUSTOMER -> "redirect:/subscription"; // customer lihat subscription page
+            case CUSTOMER -> "redirect:/customer/dashboard"; // customer lihat subscription page
         };
     }
 
