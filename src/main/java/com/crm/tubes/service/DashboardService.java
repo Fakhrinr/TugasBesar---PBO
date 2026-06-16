@@ -17,6 +17,8 @@ import com.crm.tubes.repository.TicketRepository;
 import com.crm.tubes.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Service
 @RequiredArgsConstructor
@@ -80,6 +82,7 @@ public class DashboardService {
                 expiringSubscriptions,
                 teknisiList
         );
+
     }
 
     // ── TEKNISI ───────────────────────────────────────────────────────────────
@@ -135,4 +138,54 @@ public class DashboardService {
             List<TicketModel> myTickets,
             List<Subscription> subscriptions
     ) {}
+
+    @Data
+@AllArgsConstructor
+public static class CustomerDashboardData {
+
+    private Subscription subscription;
+    private List<TicketModel> myTickets;
+    private List<Invoice> myInvoices;
+
+    private long unpaidInvoiceCount;
+    private long myTicketCount;
+}
+
+    // ── CUSTOMER ───────────────────────────────────────────────────────────────
+
+public CustomerDashboardData getCustomerData(UserModel customer) {
+
+    Subscription subscription = subscriptionRepository.findAll()
+            .stream()
+            .filter(s -> s.getCustomer() != null)
+            .filter(s -> s.getCustomer().getId().equals(customer.getId()))
+            .findFirst()
+            .orElse(null);
+
+    List<TicketModel> myTickets = ticketRepository.findAll()
+            .stream()
+            .filter(t -> customer.getId().equals(t.getCustomerId()))
+            .toList();
+
+    List<Invoice> myInvoices = invoiceRepository.findAll()
+            .stream()
+            .filter(i -> i.getSubscription() != null)
+            .filter(i -> i.getSubscription().getCustomer() != null)
+            .filter(i -> i.getSubscription().getCustomer().getId().equals(customer.getId()))
+            .toList();
+
+    long unpaidInvoiceCount = myInvoices.stream()
+            .filter(i -> i.getStatus() != InvoiceStatus.PAID)
+            .count();
+
+    long myTicketCount = myTickets.size();
+
+    return new CustomerDashboardData(
+            subscription,
+            myTickets,
+            myInvoices,
+            unpaidInvoiceCount,
+            myTicketCount
+    );
+}
 }

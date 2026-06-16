@@ -235,7 +235,7 @@
                 <td style="font-weight:600;color:var(--primary)" th:text="'INV-' + ${inv.id}">INV-1</td>
                 <td th:text="${inv.subscription?.customer?.name ?: '-'}">Customer</td>
                 <td th:text="${inv.subscription?.planName ?: '-'}">Paket</td>
-                <td th:text="'Rp ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">Rp 0</td>
+                <td th:text="'$ ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">$ 0</td>
                 <td th:text="${#temporals.format(inv.dueDate, 'dd MMM yyyy')}">01 Jan 2024</td>
                 <td>
                   <span class="badge"
