@@ -275,7 +275,7 @@ public String createTicket(
     }
 
     ticket.setCustomerId(CUSTOMER_ID);
-    ticket.setTechnicianId(null);
+    ticket.setTechnicianId(1);
 
     ticketService.createTicket(ticket);
 

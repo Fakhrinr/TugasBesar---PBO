@@ -29,7 +29,7 @@ public class TicketController {
                 ticketService.getAllTickets()
         );
 
-        return "ticket-list";
+        return "customer/ticket-list";
     }
 
     @GetMapping("/create")
