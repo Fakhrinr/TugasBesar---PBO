@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Services - ProNet Fiber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
+    <link rel="stylesheet" th:href="@{/css/customer/services.css}">
+</head>
+
+<body class="customer-shell">
+<aside class="customer-sidebar services-sidebar">
+    <div class="brand-block">
+        <span class="material-symbols-outlined brand-icon">router</span>
+        <div>
+            <h1>blabla</h1>
+            <p>Customer Portal</p>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Customer navigation">
+        <a class="nav-link" href="/customer/dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+        <a class="nav-link active" href="/customer/services">
+            <span class="material-symbols-outlined">router</span>
+            My Services
+        </a>
+        <a class="nav-link" href="/customer/billing">
+            <span class="material-symbols-outlined">payments</span>
+            Billing
+        </a>
+        <a class="nav-link" href="/customer/tickets">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            Support Tickets
+        </a>
+        
+    </nav>
+</aside>
+
+<main class="customer-main">
+    <header class="top-app-bar">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search services..." aria-label="Search services">
+        </div>
+
+        <div class="top-actions">
+            <button type="button" class="icon-button" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <a class="support-link" href="/customer/tickets">
+                <span class="material-symbols-outlined">help_outline</span>
+                <span>Support</span>
+            </a>
+            <div class="avatar" aria-hidden="true">
+                <span>C</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="services-canvas">
+        <section class="services-heading">
+            <div>
+                <h2>My Internet Services</h2>
+                <p>Manage your active subscriptions and monitor performance.</p>
+            </div>
+            <div class="heading-actions">
+                <button type="button" class="outline-button">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    Filter
+                </button>
+                <a class="primary-button" href="/customer/tickets">
+                    <span class="material-symbols-outlined">add</span>
+                    New Service
+                </a>
+            </div>
+        </section>
+
+        <section class="services-grid" aria-label="Customer services">
+            <article class="service-card">
+                <div class="service-card-header">
+                    <div>
+                        <div class="service-meta">
+                            <span class="service-id">
+                                #SRV-<span th:text="${subscription != null ? subscription.id : '0000'}">5020</span>
+                            </span>
+                            <span class="service-status active">
+                                <span></span>
+                                <span th:text="${subscription != null ? subscription.status : 'INACTIVE'}">ACTIVE</span>
+                            </span>
+                        </div>
+                        <h3 th:text="${subscription != null ? subscription.planName : 'No Active Service'}">Ultra Fiber 1000</h3>
+                        <p>
+                            <span class="material-symbols-outlined">location_on</span>
+                            <span th:text="${subscription != null && subscription.customer != null ? subscription.customer.address : 'Service address unavailable'}">
+                                123 Digital Way, Tech City
+                            </span>
+                        </p>
+                    </div>
+                    <div class="price-block">
+                        <strong th:text="${subscription != null ? subscription.monthlyFee : '-'}">$79.99</strong>
+                        <span>/mo</span>
+                    </div>
+                </div>
+
+                <div class="service-card-body">
+                    <div class="speed-grid">
+                        <div>
+                            <p>Download Speed</p>
+                            <strong>
+                                <span class="material-symbols-outlined">download</span>
+                                1000 Mbps
+                            </strong>
+                        </div>
+                        <div>
+                            <p>Upload Speed</p>
+                            <strong>
+                                <span class="material-symbols-outlined">upload</span>
+                                1000 Mbps
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="contract-row">
+                        <div>
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            Activated:
+                            <span th:text="${subscription != null ? subscription.startDate : '-'}">Jan 12, 2023</span>
+                        </div>
+                        <div>
+                            <span class="material-symbols-outlined">contract</span>
+                            Ends:
+                            <span th:text="${subscription != null ? subscription.endDate : '-'}">Jan 12, 2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card-actions">
+                    <a class="secondary-action" href="/customer/tickets">Contact Support</a>
+                    <a class="soft-action" href="/customer/services">View Service Details</a>
+                </div>
+            </article>
+
+            <article class="service-card pending-card">
+                <div class="service-card-header">
+                    <div>
+                        <div class="service-meta">
+                            <span class="service-id">#SRV-8911</span>
+                            <span class="service-status pending">
+                                <span></span>
+                                PENDING
+                            </span>
+                        </div>
+                        <h3>Pro Business 500</h3>
+                        <p>
+                            <span class="material-symbols-outlined">location_on</span>
+                            Upgrade request pending confirmation
+                        </p>
+                    </div>
+                    <div class="price-block">
+                        <strong>Rp -</strong>
+                        <span>/mo</span>
+                    </div>
+                </div>
+
+                <div class="service-card-body">
+                    <div class="speed-grid faded">
+                        <div>
+                            <p>Download Speed</p>
+                            <strong>
+                                <span class="material-symbols-outlined">download</span>
+                                500 Mbps
+                            </strong>
+                        </div>
+                        <div>
+                            <p>Upload Speed</p>
+                            <strong>
+                                <span class="material-symbols-outlined">upload</span>
+                                500 Mbps
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="info-callout">
+                        <span class="material-symbols-outlined">info</span>
+                        <div>
+                            <strong>Installation Scheduled</strong>
+                            <p>Technician schedule is not available yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card-actions">
+                    <a class="secondary-action" href="/customer/tickets">Reschedule</a>
+                    <a class="soft-action" href="/customer/services">View Order Details</a>
+                </div>
+            </article>
+        </section>
+    </div>
+</main>
+</body>
+</html>

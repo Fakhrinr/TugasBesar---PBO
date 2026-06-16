@@ -1,11 +1,13 @@
 package com.crm.tubes.service;
 
-import com.crm.tubes.model.Subscription;
-import com.crm.tubes.repository.SubscriptionRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.crm.tubes.model.Subscription;
+import com.crm.tubes.repository.SubscriptionRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * SubscriptionService — handle business logic subscription.
@@ -65,6 +67,10 @@ public class SubscriptionService {
      */
     public Subscription getActiveSubscriptionByCustomer(int customerId) {
         Subscription sub = subscriptionRepository.findActiveByCustomerId(customerId);
+
+        if (sub == null) {
+            return null;
+        }
 
         // Auto update status
         var oldStatus = sub.getStatus();

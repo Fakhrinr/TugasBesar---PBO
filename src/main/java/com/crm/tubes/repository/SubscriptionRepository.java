@@ -106,7 +106,10 @@ public class SubscriptionRepository {
                  ORDER BY s.start_date DESC
                  LIMIT 1
                 """;
-        return jdbcTemplate.queryForObject(sql, subscriptionRowMapper, customerId);
+        List<Subscription> subscriptions =
+                jdbcTemplate.query(sql, subscriptionRowMapper, customerId);
+
+        return subscriptions.isEmpty() ? null : subscriptions.get(0);
     }
 
     /**

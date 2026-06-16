@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Support Tickets - ProNet Fiber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
+    <link rel="stylesheet" th:href="@{/css/customer/ticket.css}">
+</head>
+
+<body class="customer-shell ticket-shell">
+<aside class="customer-sidebar">
+    <div class="brand-block">
+        <span class="material-symbols-outlined brand-icon">router</span>
+        <div>
+            <h1>Bla bla</h1>
+            <p>Customer Portal</p>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Customer navigation">
+        <a class="nav-link" href="/customer/dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+        <a class="nav-link" href="/customer/services">
+            <span class="material-symbols-outlined">router</span>
+            My Services
+        </a>
+        <a class="nav-link" href="/customer/billing">
+            <span class="material-symbols-outlined">payments</span>
+            Billing
+        </a>
+        <a class="nav-link active" href="/customer/tickets">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            Support Tickets
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="upgrade-button" href="/customer/services">Upgrade Plan</a>
+    </div>
+</aside>
+
+<main class="customer-main">
+    <header class="top-app-bar">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search tickets">
+        </div>
+
+        <div class="top-actions">
+            <button type="button" class="icon-button" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Help">
+                <span class="material-symbols-outlined">help</span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Settings">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="avatar" aria-hidden="true">
+                <span>C</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="tickets-canvas">
+        <section class="tickets-heading">
+            <div>
+                <h2>My Support Tickets</h2>
+                <p>Manage and track your service requests.</p>
+            </div>
+            <a class="create-ticket-button" href="/customer/tickets/create">
+                <span class="material-symbols-outlined">add</span>
+                Create New Ticket
+            </a>
+        </section>
+
+        <section class="ticket-summary" aria-label="Ticket summary">
+            <article>
+                <span class="material-symbols-outlined">confirmation_number</span>
+                <div>
+                    <p>Open</p>
+                    <strong th:text="${openCount}">0</strong>
+                </div>
+            </article>
+            <article>
+                <span class="material-symbols-outlined">sync</span>
+                <div>
+                    <p>In Progress</p>
+                    <strong th:text="${inProgressCount}">0</strong>
+                </div>
+            </article>
+            <article>
+                <span class="material-symbols-outlined">check_circle</span>
+                <div>
+                    <p>Resolved</p>
+                    <strong th:text="${resolvedCount}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="tickets-panel">
+            <div class="tickets-panel-header">
+                <h3>Recent Support Tickets</h3>
+            </div>
+
+            <div class="ticket-table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Title &amp; Description</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ticket : ${tickets}">
+                        <td class="ticket-id">
+                            #TK-<span th:text="${ticket.id}">8902</span>
+                        </td>
+                        <td>
+                            <div class="ticket-title" th:text="${ticket.title}">Intermittent Connection Drops</div>
+                            <div class="ticket-description" th:text="${ticket.description}">
+                                Router loses connection every evening around 8 PM.
+                            </div>
+                        </td>
+                        <td>
+                            <span class="ticket-badge priority" th:text="${ticket.priority}">HIGH</span>
+                        </td>
+                        <td>
+                            <span class="ticket-badge status" th:text="${ticket.status}">IN_PROGRESS</span>
+                        </td>
+                        <td class="muted-cell" th:text="${ticket.createdAt}">2026-06-14</td>
+                        <td class="text-right">
+                            <div class="table-actions">
+                                <a class="ticket-action" th:href="@{/customer/tickets/{id}(id=${ticket.id})}">
+                                    <span class="material-symbols-outlined">visibility</span>
+                                    View
+                                </a>
+                                <a class="ticket-action secondary" th:href="@{/customer/tickets/{id}(id=${ticket.id})}">
+                                    <span class="material-symbols-outlined">timeline</span>
+                                    Track
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${tickets == null || #lists.isEmpty(tickets)}">
+                        <td colspan="6" class="empty-state">No support tickets found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tickets-pagination">
+                <span>
+                    Showing
+                    <strong th:text="${tickets != null ? #lists.size(tickets) : 0}">0</strong>
+                    ticket entries
+                </span>
+                <div>
+                    <button type="button" disabled aria-label="Previous page">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button type="button" aria-label="Next page">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>
