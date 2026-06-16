@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 
@@ -134,13 +135,19 @@ public class InvoiceController {
      * Hanya Admin
      */
     @PostMapping("/{id}/late-fee")
-    public String applyLateFee(@PathVariable int id, HttpSession session) {
+    public String applyLateFee(@PathVariable int id,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
 
         UserModel loggedUser = getLoggedUser(session);
         if (loggedUser == null) return "redirect:/login";
         if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
 
-        invoiceService.applyLateFee(id, BigDecimal.valueOf(3));
+        try {
+            invoiceService.applyLateFee(id, BigDecimal.valueOf(3));
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }   
         return "redirect:/invoices/" + id;
     }
 

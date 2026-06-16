@@ -226,8 +226,10 @@
                 </div>
 
                 <form th:action="@{/invoices/{id}/late-fee(id=${invoice.id})}"
-                      method="post">
-                    <button class="btn-purple">
+                        method="post">
+                    <button class="btn-purple"
+                        th:disabled="${invoice.status.name() != 'OVERDUE'}"
+                        th:classappend="${invoice.status.name() != 'OVERDUE'} ? ' btn-disabled' : ''">
                         <i class="fa-solid fa-plus"></i>
                         Apply Late Fee
                     </button>

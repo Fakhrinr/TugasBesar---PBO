@@ -50,16 +50,12 @@ public class InvoiceService {
     /**
      * Apply late fee to invoice
      */
-    public void applyLateFee(int invoiceId, BigDecimal fee) {
 
+    public void applyLateFee(int invoiceId, BigDecimal fee) {
         Invoice invoice = invoiceRepository.findById(invoiceId);
 
-        invoice.applyLateFee(fee);
-
-        invoiceRepository.updateLateFee(
-                invoiceId,
-                invoice.getLateFeeAmount()
-        );
+        invoice.applyLateFee(fee); // validasi sudah ditangani di Invoice.java
+        invoiceRepository.updateLateFee(invoiceId, invoice.getLateFeeAmount());
     }
 
     /**
