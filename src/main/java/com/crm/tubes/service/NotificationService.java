@@ -125,7 +125,7 @@ public class NotificationService {
     ) {
         String message = "Invoice ID "
                 + invoiceId
-                + " sebesar Rp"
+                + " sebesar $"
                 + totalAmount
                 + " telah dibuat dan jatuh tempo pada "
                 + dueDate
@@ -154,7 +154,7 @@ public class NotificationService {
 
     @Transactional
     public NotificationModel notifyPaymentSuccess(Integer userId, BigDecimal amount) {
-        String message = "Pembayaran sebesar Rp" + amount + " berhasil diterima.";
+        String message = "Pembayaran sebesar $" + amount + " berhasil diterima.";
 
         return createNotification(userId, NotificationType.PAYMENT_SUCCESS, message);
     }
