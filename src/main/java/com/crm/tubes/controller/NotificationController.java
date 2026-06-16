@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/notifications")
+@RequestMapping("/notifications") 
 @RequiredArgsConstructor
 public class NotificationController {
 
