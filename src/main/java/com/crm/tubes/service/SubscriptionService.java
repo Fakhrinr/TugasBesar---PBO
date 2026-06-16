@@ -74,4 +74,16 @@ public class SubscriptionService {
         }
         return sub;
     }
+
+    public void activateSubscription(int subscriptionId) {
+
+    Subscription subscription = subscriptionRepository.findById(subscriptionId);
+
+    subscription.activate();
+
+    subscriptionRepository.updateStatus(
+            subscription.getId(),
+            subscription.getStatus()
+    );
+}
 }

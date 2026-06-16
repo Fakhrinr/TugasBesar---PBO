@@ -235,7 +235,8 @@ INSERT INTO staff (user_id, employee_id) VALUES
 -- Sample subscriptions
 INSERT INTO subscription (customer_id, plan_name, start_date, end_date, monthly_fee, status) VALUES
 (1, 'Starter Plan',  '2026-04-01', '2026-05-01', 29.99, 'ACTIVE'),
-(2, 'Pro Plan',      '2026-03-15', '2026-04-15', 59.99, 'GRACE');
+(2, 'Pro Plan',      '2026-05-15', '2026-06-18', 59.99, 'GRACE'),
+(2, 'Starter Plan',  '2026-06-15', '2026-07-15', 59.99, 'ACTIVE');-- subscription baru untuk Diana, mulai 15 Juni
 
 -- Sample invoices
 INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES

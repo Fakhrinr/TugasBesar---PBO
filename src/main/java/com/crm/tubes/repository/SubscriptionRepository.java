@@ -98,4 +98,17 @@ public class SubscriptionRepository {
         String sql = "UPDATE subscription SET status = ? WHERE id = ?";
         jdbcTemplate.update(sql, status.name(), id);
     }
+
+    public Subscription findById(int id) {
+
+    String sql = BASE_SQL + """
+            WHERE s.id = ?
+            """;
+
+    return jdbcTemplate.queryForObject(
+            sql,
+            subscriptionRowMapper,
+            id
+    );
+}
 }

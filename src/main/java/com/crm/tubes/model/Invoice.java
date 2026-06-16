@@ -50,7 +50,13 @@ public class Invoice {
     }
 
     public void applyLateFee(BigDecimal fee) {
-        this.lateFeeAmount = this.lateFeeAmount.add(fee);
+    // Hanya bisa apply late fee jika status OVERDUE
+    if (this.status != InvoiceStatus.OVERDUE) {
+        throw new IllegalStateException(
+            "Late fee hanya bisa diterapkan pada invoice yang berstatus OVERDUE"
+        );
+    }
+    this.lateFeeAmount = this.lateFeeAmount.add(fee);
     }
 
     public void markAsPaid() {

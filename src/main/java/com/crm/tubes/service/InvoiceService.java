@@ -12,9 +12,14 @@ import java.util.List;
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
+    private final SubscriptionService subscriptionService;
 
-    public InvoiceService(InvoiceRepository invoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
+    public InvoiceService(
+        InvoiceRepository invoiceRepository,
+        SubscriptionService subscriptionService
+    ) {
+    this.invoiceRepository = invoiceRepository;
+    this.subscriptionService = subscriptionService;
     }
 
     /**
@@ -61,14 +66,20 @@ public class InvoiceService {
      */
     public void markAsPaid(int invoiceId) {
 
-        Invoice invoice = invoiceRepository.findById(invoiceId);
+    Invoice invoice = invoiceRepository.findById(invoiceId);
 
-        invoice.markAsPaid();
+    invoice.markAsPaid();
 
-        invoiceRepository.updateStatus(
-                invoiceId,
-                InvoiceStatus.PAID
-        );
+    invoiceRepository.updateStatus(
+            invoiceId,
+            InvoiceStatus.PAID
+    );
+
+
+    // Aktifkan kembali subscription setelah pembayaran berhasil
+    subscriptionService.activateSubscription(
+            invoice.getSubscription().getId()
+    );
     }
 
     /**
