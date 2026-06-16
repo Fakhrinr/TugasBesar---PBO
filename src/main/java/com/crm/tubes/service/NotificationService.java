@@ -22,21 +22,21 @@ public class NotificationService {
             Integer userId,
             NotificationType type,
             String message
-    ) {
-        validateUserId(userId);
-        validateType(type);
-        validateMessage(message);
+    ) {validateUserId(userId);
+    validateType(type);
+    validateMessage(message);
 
-        NotificationModel notification = new NotificationModel();
-        notification.setUserId(userId);
-        notification.setType(type);
-        notification.setMessage(message);
+    NotificationModel notification = new NotificationModel();
+    notification.setUserId(userId);
+    notification.setType(type);
+    notification.setMessage(message.trim());
 
-        int savedRows = notificationRepository.save(notification);
-        if (savedRows == 0) {
-            throw new RuntimeException("Gagal menyimpan notifikasi.");
-        }
-        return notification;
+    int savedRows = notificationRepository.save(notification);
+    if (savedRows == 0) {
+        throw new RuntimeException("Gagal menyimpan notifikasi.");
+    }
+
+    return notification;
     }
 
     public List<NotificationModel> getNotificationsByUserId(Integer userId) {
