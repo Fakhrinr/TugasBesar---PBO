@@ -1,45 +1,29 @@
 package com.crm.tubes.repository;
 
-import java.util.List;
-
+import com.crm.tubes.model.CustomerModel;
+import com.crm.tubes.model.Subscription;
+import com.crm.tubes.model.SubscriptionStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.crm.tubes.model.CustomerModel;
-import com.crm.tubes.model.Subscription;
-import com.crm.tubes.model.SubscriptionStatus;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
-/**
- * SubscriptionRepository — ngomong sama database MySQL.
- *
- * @Repository         → Spring tau ini class database
- * @RequiredArgsConstructor → Lombok inject JdbcTemplate otomatis
- */
 @Repository
 @RequiredArgsConstructor
 public class SubscriptionRepository {
 
-    // JdbcTemplate diinjek Lombok lewat constructor
     private final JdbcTemplate jdbcTemplate;
 
-    // ── RowMapper ─────────────────────────────────────────────────────────
-    /**
-     * Ngubah satu baris dari database → satu object Subscription.
-     * Pake CustomerModel (punya Tiara) untuk data customer nya.
-     */
     private final RowMapper<Subscription> subscriptionRowMapper = (rs, rowNum) -> {
 
-        // Build CustomerModel dari hasil JOIN dengan tabel user & customer
         CustomerModel customer = new CustomerModel();
         customer.setId(rs.getInt("customer_id"));
         customer.setName(rs.getString("customer_name"));
         customer.setPhone(rs.getString("phone"));
         customer.setAddress(rs.getString("address"));
 
-        // Build Subscription object
         Subscription sub = new Subscription();
         sub.setId(rs.getInt("id"));
         sub.setCustomer(customer);
@@ -52,8 +36,6 @@ public class SubscriptionRepository {
         return sub;
     };
 
-    // ── Base SQL ──────────────────────────────────────────────────────────
-    // SQL dasar yang dipake semua query (biar ga nulis ulang)
     private static final String BASE_SQL = """
             SELECT
                 s.id,
@@ -74,8 +56,8 @@ public class SubscriptionRepository {
     // ── Queries ───────────────────────────────────────────────────────────
 
     /**
-     * findAll() — ambil SEMUA subscription dari database.
-     * Dipakai untuk Admin/Teknisi view.
+     findAll() — ambil SEMUA subscription dari database.
+     Dipakai untuk Admin/Teknisi view.
      */
     public List<Subscription> findAll() {
         String sql = BASE_SQL + " ORDER BY s.id DESC";
@@ -83,10 +65,8 @@ public class SubscriptionRepository {
     }
 
     /**
-     * findByCustomerId() — ambil semua subscription milik 1 customer.
-     * Dipakai untuk history table di Customer view.
-     *
-     * @param customerId ID customer yang lagi login
+     findByCustomerId() — ambil semua subscription milik 1 customer.
+     Dipakai untuk history table di Customer view.
      */
     public List<Subscription> findByCustomerId(int customerId) {
         String sql = BASE_SQL + " WHERE c.id = ? ORDER BY s.start_date DESC";
@@ -96,8 +76,6 @@ public class SubscriptionRepository {
     /**
      * findActiveByCustomerId() — ambil subscription AKTIF milik 1 customer.
      * Dipakai untuk card plan aktif di Customer view.
-     *
-     * @param customerId ID customer yang lagi login
      */
     public Subscription findActiveByCustomerId(int customerId) {
         String sql = BASE_SQL + """

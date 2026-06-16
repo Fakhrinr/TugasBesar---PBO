@@ -236,3 +236,10 @@ INSERT INTO staff (user_id, employee_id) VALUES
 INSERT INTO subscription (customer_id, plan_name, start_date, end_date, monthly_fee, status) VALUES
 (1, 'Starter Plan',  '2026-04-01', '2026-05-01', 29.99, 'ACTIVE'),
 (2, 'Pro Plan',      '2026-03-15', '2026-04-15', 59.99, 'GRACE');
+
+-- Sample invoices
+INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
+(1, '2026-06-01', '2026-06-15', 29.99, 0, 'OPEN');
+
+INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
+(2, '2026-06-01', '2026-06-15', 59.99, 0, 'PAID');

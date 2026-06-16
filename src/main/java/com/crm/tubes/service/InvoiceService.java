@@ -33,7 +33,13 @@ public class InvoiceService {
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();
     }
-
+/**
+ * Get invoices by customer ID
+ * Dipakai oleh Customer (hanya lihat miliknya)
+ */
+    public List<Invoice> getInvoicesByCustomerId(int customerId) {
+        return invoiceRepository.findByCustomerId(customerId);
+    }
     /**
      * Get invoice by id
      */
@@ -86,3 +92,4 @@ public class InvoiceService {
         );
     }
 }
+
