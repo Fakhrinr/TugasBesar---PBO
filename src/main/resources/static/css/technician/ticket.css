@@ -1,0 +1,499 @@
+.ticket-shell {
+    height: auto;
+}
+
+.tickets-canvas {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: 112px 48px 48px;
+}
+
+.tickets-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.tickets-heading h2 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.2;
+}
+
+.tickets-heading p {
+    margin: 8px 0 0;
+    color: var(--color-muted);
+    font-size: 16px;
+}
+
+.outline-ticket-button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--color-outline);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 8px 16px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.outline-ticket-button:hover {
+    background: var(--color-surface-low);
+    color: var(--color-primary);
+}
+
+.tickets-panel {
+    overflow: hidden;
+    border: 1px solid var(--color-outline);
+    border-radius: 12px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+}
+
+.tickets-panel-header {
+    display: flex;
+    min-height: 72px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--color-outline);
+    background: var(--color-background);
+    padding: 20px 24px;
+}
+
+.tickets-panel-header h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.tickets-panel-header span {
+    color: var(--color-muted);
+}
+
+.tickets-panel-header strong {
+    color: var(--color-primary);
+}
+
+.ticket-table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead tr {
+    border-bottom: 1px solid var(--color-outline);
+    background: var(--color-surface);
+}
+
+th {
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 16px 24px;
+    text-transform: uppercase;
+}
+
+td {
+    border-bottom: 1px solid var(--color-outline);
+    color: var(--color-text);
+    padding: 16px 24px;
+    vertical-align: middle;
+}
+
+tbody tr:hover {
+    background: var(--color-surface-low);
+}
+
+.ticket-id,
+.ticket-title {
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.ticket-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    text-transform: uppercase;
+}
+
+.ticket-badge.priority {
+    background: rgba(186, 26, 26, 0.1);
+    color: var(--color-error);
+}
+
+.ticket-badge.status {
+    background: var(--color-surface-container);
+    color: var(--color-primary);
+}
+
+.muted-cell {
+    color: var(--color-muted);
+}
+
+.text-right {
+    text-align: right;
+}
+
+.ticket-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ticket-action:hover {
+    color: var(--color-primary-container);
+}
+
+.ticket-action .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.empty-state {
+    color: var(--color-muted);
+    padding: 24px;
+    text-align: center;
+}
+
+.ticket-detail-canvas {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: 112px 48px 48px;
+}
+
+.ticket-detail-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.ticket-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.ticket-breadcrumb a:hover {
+    color: var(--color-primary);
+}
+
+.ticket-breadcrumb .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.ticket-detail-heading h2 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.2;
+}
+
+.ticket-detail-heading p {
+    margin: 8px 0 0;
+    color: var(--color-muted);
+    font-size: 16px;
+}
+
+.ticket-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+    gap: 24px;
+}
+
+.detail-main-column,
+.detail-side-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.detail-panel {
+    border: 1px solid var(--color-outline);
+    border-radius: 12px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+}
+
+.detail-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.detail-panel h3,
+.detail-panel-header h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.detail-panel-header p {
+    margin: 4px 0 0;
+    color: var(--color-muted);
+}
+
+.detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.detail-copy p {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.workflow-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 12px;
+}
+
+.workflow-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: 24px;
+    bottom: -24px;
+    left: 11px;
+    width: 2px;
+    background: var(--color-outline);
+}
+
+.workflow-marker {
+    position: relative;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-outline);
+    border-radius: 999px;
+    background: var(--color-surface);
+}
+
+.workflow-marker::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-outline);
+}
+
+.workflow-step.complete .workflow-marker {
+    border-color: var(--color-tertiary);
+}
+
+.workflow-step.complete .workflow-marker::after {
+    background: var(--color-tertiary);
+}
+
+.workflow-step p {
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.workflow-step small {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-muted);
+}
+
+.action-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.current-status {
+    border: 1px solid var(--color-outline);
+    border-radius: 8px;
+    background: var(--color-surface-low);
+    padding: 16px;
+}
+
+.current-status span {
+    display: block;
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.current-status strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-text);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.primary-action-button {
+    display: inline-flex;
+    width: 100%;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 16px;
+    box-shadow: var(--shadow-card);
+}
+
+.primary-action-button:hover {
+    background: var(--color-primary-container);
+}
+
+.primary-action-button.success {
+    border-color: var(--color-tertiary);
+    background: var(--color-tertiary);
+}
+
+.primary-action-button.success:hover {
+    background: var(--color-tertiary-container);
+}
+
+.completed-state {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(0, 133, 91, 0.24);
+    border-radius: 8px;
+    background: rgba(0, 133, 91, 0.08);
+    color: var(--color-tertiary);
+    padding: 16px;
+}
+
+.completed-state .material-symbols-outlined {
+    font-size: 32px;
+    font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+}
+
+.completed-state p {
+    margin: 0;
+    color: var(--color-tertiary);
+    font-weight: 700;
+}
+
+.completed-state small {
+    color: var(--color-muted);
+}
+
+.meta-panel dl {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0 0;
+}
+
+.meta-panel dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--color-outline);
+    padding-bottom: 12px;
+}
+
+.meta-panel dl div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.meta-panel dt {
+    color: var(--color-muted);
+    font-weight: 600;
+}
+
+.meta-panel dd {
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 700;
+    text-align: right;
+}
+
+@media (max-width: 900px) {
+    .tickets-canvas {
+        padding: 32px 16px;
+    }
+
+    .ticket-detail-canvas {
+        padding: 32px 16px;
+    }
+
+    .tickets-heading,
+    .tickets-panel-header,
+    .ticket-detail-heading,
+    .detail-panel-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ticket-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .outline-ticket-button {
+        width: 100%;
+    }
+
+    .text-right {
+        text-align: left;
+    }
+
+    .ticket-action {
+        justify-content: flex-start;
+    }
+}

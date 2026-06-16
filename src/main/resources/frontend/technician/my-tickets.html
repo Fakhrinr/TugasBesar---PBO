@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - ProNet Fiber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/technician/technician-base.css}">
+    <link rel="stylesheet" th:href="@{/css/technician/ticket.css}">
+</head>
+
+<body class="technician-shell ticket-shell">
+<aside class="technician-sidebar">
+    <div class="brand-block">
+        <span class="material-symbols-outlined brand-icon">engineering</span>
+        <div>
+            <h1>bla bla</h1>
+            <p>Technician Portal</p>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Technician navigation">
+        <a class="nav-link" href="/technician/dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+        <a class="nav-link active" href="/technician/my-tickets">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            My Tickets
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="primary-sidebar-button" href="/technician/my-tickets">
+            <span class="material-symbols-outlined">task_alt</span>
+            View Assignments
+        </a>
+        <div class="footer-links">
+            <a class="nav-link" href="/logout">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+        </div>
+    </div>
+</aside>
+
+<main class="technician-main">
+    <header class="top-app-bar">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search tickets..." aria-label="Search tickets">
+        </div>
+
+        <div class="top-actions">
+            <button type="button" class="icon-button" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="notification-dot"></span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Help">
+                <span class="material-symbols-outlined">help_outline</span>
+            </button>
+            <div class="avatar" aria-hidden="true">
+                <span>T</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="tickets-canvas">
+        <section class="tickets-heading">
+            <div>
+                <h2>My Tickets</h2>
+                <p>Review assigned support tickets and open ticket details.</p>
+            </div>
+            <a class="outline-ticket-button" href="/technician/dashboard">
+                <span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+        </section>
+
+        <section class="tickets-panel">
+            <div class="tickets-panel-header">
+                <h3>Assigned Tickets</h3>
+                <span>
+                    <strong th:text="${tickets != null ? #lists.size(tickets) : 0}">0</strong>
+                    entries
+                </span>
+            </div>
+
+            <div class="ticket-table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ticket : ${tickets}">
+                        <td class="ticket-id">
+                            #TK-<span th:text="${ticket.id}">1</span>
+                        </td>
+                        <td>
+                            <div class="ticket-title" th:text="${ticket.title != null ? ticket.title : 'Untitled Ticket'}">Connection issue</div>
+                        </td>
+                        <td>
+                            <span class="ticket-badge priority" th:text="${ticket.priority != null ? ticket.priority : 'NORMAL'}">HIGH</span>
+                        </td>
+                        <td>
+                            <span class="ticket-badge status" th:text="${ticket.status != null ? ticket.status : 'OPEN'}">OPEN</span>
+                        </td>
+                        <td class="muted-cell" th:text="${ticket.createdAt != null ? ticket.createdAt : '-'}">2026-06-16</td>
+                        <td class="text-right">
+                            <a class="ticket-action" th:href="@{/technician/my-tickets/{id}(id=${ticket.id})}">
+                                <span class="material-symbols-outlined">visibility</span>
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${tickets == null || #lists.isEmpty(tickets)}">
+                        <td colspan="6" class="empty-state">No assigned tickets</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

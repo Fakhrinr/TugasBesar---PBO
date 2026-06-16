@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.crm.tubes.model.TicketModel;
@@ -14,32 +15,8 @@ public class TicketRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<TicketModel> findAll() {
-
-        String sql = "SELECT * FROM ticket";
-
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new TicketModel(
-                        rs.getInt("id"),
-                        rs.getInt("customer_id"),
-                        (Integer) rs.getObject("technician_id"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getString("priority"),
-                        rs.getString("status"),
-                        rs.getTimestamp("created_at")
-                )
-        );
-    }
-    
-
-    public TicketModel findById(int id) {
-
-    String sql = "SELECT * FROM ticket WHERE id = ?";
-
-    return jdbcTemplate.queryForObject(
-            sql,
-            (rs, rowNum) -> new TicketModel(
+    private final RowMapper<TicketModel> ticketRowMapper = (rs, rowNum) ->
+            new TicketModel(
                     rs.getInt("id"),
                     rs.getInt("customer_id"),
                     (Integer) rs.getObject("technician_id"),
@@ -48,7 +25,38 @@ public class TicketRepository {
                     rs.getString("priority"),
                     rs.getString("status"),
                     rs.getTimestamp("created_at")
-            ),
+            );
+
+    public List<TicketModel> findAll() {
+
+        String sql = "SELECT * FROM ticket";
+
+        return jdbcTemplate.query(sql, ticketRowMapper);
+    }
+
+    public List<TicketModel> findByTechnicianId(int technicianId) {
+
+        String sql = """
+                SELECT *
+                FROM ticket
+                WHERE technician_id = ?
+                ORDER BY created_at DESC
+                """;
+
+        return jdbcTemplate.query(
+                sql,
+                ticketRowMapper,
+                technicianId
+        );
+    }
+
+    public TicketModel findById(int id) {
+
+    String sql = "SELECT * FROM ticket WHERE id = ?";
+
+    return jdbcTemplate.queryForObject(
+            sql,
+            ticketRowMapper,
             id
     );
 }
