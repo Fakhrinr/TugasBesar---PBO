@@ -70,5 +70,3 @@ public class SubscriptionController {
         return "subscription";
     }
 }
-
-

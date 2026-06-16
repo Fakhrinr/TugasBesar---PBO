@@ -19,79 +19,159 @@ import lombok.RequiredArgsConstructor;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final InvoiceRepository invoiceRepository; // ← tambah ini
+    private final InvoiceRepository invoiceRepository;
+    private final NotificationService notificationService;
+
 
     public List<Subscription> getAllSubscriptions() {
+
         List<Subscription> list = subscriptionRepository.findAll();
 
         for (Subscription sub : list) {
-            var oldStatus = sub.getStatus();
-            sub.checkStatus();
-            if (!sub.getStatus().equals(oldStatus)) {
-                subscriptionRepository.updateStatus(sub.getId(), sub.getStatus());
 
-                // ← Auto generate invoice jika berubah ke GRACE atau SUSPENDED
+            SubscriptionStatus oldStatus = sub.getStatus();
+
+            sub.checkStatus();
+
+            if (!sub.getStatus().equals(oldStatus)) {
+
+                subscriptionRepository.updateStatus(
+                    sub.getId(),
+                    sub.getStatus()
+                );
+
                 if (sub.getStatus() == SubscriptionStatus.GRACE ||
                     sub.getStatus() == SubscriptionStatus.SUSPENDED) {
+
                     generateInvoiceForSubscription(sub);
                 }
             }
         }
+
         return list;
     }
+
+
 
     public List<Subscription> getSubscriptionsByCustomerId(int customerId) {
-        List<Subscription> list = subscriptionRepository.findByCustomerId(customerId);
+
+        List<Subscription> list =
+                subscriptionRepository.findByCustomerId(customerId);
+
 
         for (Subscription sub : list) {
-            var oldStatus = sub.getStatus();
-            sub.checkStatus();
-            if (!sub.getStatus().equals(oldStatus)) {
-                subscriptionRepository.updateStatus(sub.getId(), sub.getStatus());
 
-                // ← Auto generate invoice juga
+            SubscriptionStatus oldStatus = sub.getStatus();
+
+            sub.checkStatus();
+
+            if (!sub.getStatus().equals(oldStatus)) {
+
+                subscriptionRepository.updateStatus(
+                    sub.getId(),
+                    sub.getStatus()
+                );
+
+
                 if (sub.getStatus() == SubscriptionStatus.GRACE ||
                     sub.getStatus() == SubscriptionStatus.SUSPENDED) {
+
                     generateInvoiceForSubscription(sub);
                 }
             }
         }
+
         return list;
     }
 
+
+
     public Subscription getActiveSubscriptionByCustomer(int customerId) {
-        Subscription sub = subscriptionRepository.findActiveByCustomerId(customerId);
 
-        var oldStatus = sub.getStatus();
+        Subscription sub =
+                subscriptionRepository.findActiveByCustomerId(customerId);
+
+
+        SubscriptionStatus oldStatus = sub.getStatus();
+
         sub.checkStatus();
-        if (!sub.getStatus().equals(oldStatus)) {
-            subscriptionRepository.updateStatus(sub.getId(), sub.getStatus());
 
-            // ← Auto generate invoice juga
+
+        if (!sub.getStatus().equals(oldStatus)) {
+
+            subscriptionRepository.updateStatus(
+                sub.getId(),
+                sub.getStatus()
+            );
+
+
             if (sub.getStatus() == SubscriptionStatus.GRACE ||
                 sub.getStatus() == SubscriptionStatus.SUSPENDED) {
+
                 generateInvoiceForSubscription(sub);
             }
         }
+
+
         return sub;
     }
 
-    public void activateSubscription(int subscriptionId) {
-        Subscription subscription = subscriptionRepository.findById(subscriptionId);
-        subscription.renewFromNow();
-        subscriptionRepository.updateFullSubscription(subscription);
+
+
+    // Dipanggil ketika invoice sudah dibayar
+    public void activateSubscription(Integer subscriptionId) {
+
+
+        Subscription sub =
+                subscriptionRepository.findById(subscriptionId);
+
+
+        LocalDate today = LocalDate.now();
+
+
+        sub.setStatus(SubscriptionStatus.ACTIVE);
+
+        // mulai dari tanggal bayar
+        sub.setStartDate(today);
+
+        // aktif 1 bulan dari tanggal bayar
+        sub.setEndDate(today.plusMonths(1));
+
+
+        subscriptionRepository.updateSubscription(sub);
     }
 
-    // ── Helper: generate invoice dari subscription ────────────────────────
+
+
     private void generateInvoiceForSubscription(Subscription sub) {
+
+
         Invoice invoice = new Invoice();
+
+
         invoice.setSubscription(sub);
+
         invoice.setIssueDate(LocalDate.now());
-        invoice.setDueDate(LocalDate.now().plusDays(7)); // due 7 hari
-        invoice.setTotalAmount(BigDecimal.valueOf(sub.getMonthlyFee()));
-        invoice.setLateFeeAmount(BigDecimal.ZERO);
-        invoice.generateInvoice(); // set status OPEN
+
+        invoice.setDueDate(
+            LocalDate.now().plusDays(7)
+        );
+
+
+        invoice.setTotalAmount(
+            BigDecimal.valueOf(sub.getMonthlyFee())
+        );
+
+
+        invoice.setLateFeeAmount(
+            BigDecimal.ZERO
+        );
+
+
+        invoice.generateInvoice();
+
 
         invoiceRepository.save(invoice);
     }
+
 }

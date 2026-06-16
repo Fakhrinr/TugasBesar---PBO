@@ -175,115 +175,106 @@
            activePlan  → Subscription (card atas)
            subscribers → List<Subscription> (semua subscriber)
     ════════════════════════════════════════════════ -->
-    <!-- ADMIN VIEW -->
-<div th:if="${role != null and (role.name() == 'ADMIN' or role.name() == 'TEKNISI')}">
+    <div th:if="${role != null and (role.name() == 'ADMIN' or role.name() == 'TEKNISI')}">
 
-  <div id="admin-detail-card" class="plan-card" th:if="${activePlan != null}">
-    <div class="plan-title-row">
-      <span id="card-plan-name" class="plan-name" th:text="${activePlan.planName}">Starter Plan</span>
-      <span id="card-status-badge" class="status-badge"
-            th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'badge-active'
-                          : (${activePlan.status.name() == 'GRACE'}    ? 'badge-grace'
-                          : 'badge-suspended')">
-        <i id="card-status-icon" class="bi"
-           th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'bi-check-circle-fill'
-                         : (${activePlan.status.name() == 'GRACE'}    ? 'bi-clock-fill'
-                         : 'bi-slash-circle-fill')"></i>
-        <span id="card-status-text" th:text="${activePlan.status}">Active</span>
-      </span>
+      <!-- Card Plan Aktif -->
+      <div th:if="${activePlan != null}" class="plan-card" th:object="${activePlan}">
+        <div class="plan-title-row">
+          <span class="plan-name" th:text="*{planName}">Starter Plan</span>
+          <span class="status-badge"
+                th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'badge-active'
+                              : (${activePlan.status.name() == 'GRACE'}    ? 'badge-grace'
+                              : 'badge-suspended')">
+            <i class="bi"
+               th:classappend="${activePlan.status.name() == 'ACTIVE'}    ? 'bi-check-circle-fill'
+                             : (${activePlan.status.name() == 'GRACE'}    ? 'bi-clock-fill'
+                             : 'bi-slash-circle-fill')"></i>
+            <span th:text="*{status}">Active</span>
+          </span>
+        </div>
+        <p class="plan-sub-id">
+          Subscription ID : <strong th:text="*{id}">0123456</strong>
+        </p>
+        <div class="plan-meta">
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> Start Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(activePlan.startDate, 'MMM d, yyyy')}">Apr 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-calendar3"></i> End Date</span>
+            <span class="meta-value"
+                  th:text="${#temporals.format(activePlan.endDate, 'MMM d, yyyy')}">May 1, 2026</span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label">Next Billing Amount</span>
+            <span class="meta-value">
+              $<span th:text="*{monthlyFee}">29.99</span>
+              <span style="font-weight:400;font-size:12px;color:var(--text-muted)">/month</span>
+            </span>
+          </div>
+          <div class="meta-block">
+            <span class="meta-label"><i class="bi bi-box-arrow-up-right"></i> Status</span>
+            <span class="meta-value"
+                  th:classappend="${activePlan.status.name() == 'ACTIVE'}   ? 'clr-success'
+                                : (${activePlan.status.name() == 'GRACE'}   ? 'clr-warning'
+                                : 'clr-danger')"
+                  th:text="*{status}">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${activePlan == null}" class="plan-card empty-plan">
+        <i class="bi bi-calendar-x"></i>
+        No active subscription found.
+      </div>
+
+      <!-- Tabel Semua Subscriber -->
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Subscriber</h3>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Subscriber</th>
+                <th>Subscription ID</th>
+                <th>Plan Name</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Monthly Fee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="sub : ${subscribers}" th:object="${sub}">
+                <td><strong th:text="*{customer.name}">Larry Luciano</strong></td>
+                <td style="color:var(--text-muted);font-weight:600"
+                    th:text="*{id}">0123456</td>
+                <td th:text="*{planName}">Starter Plan</td>
+                <td>
+                  <span class="pill"
+                        th:classappend="${sub.status.name() == 'ACTIVE'}    ? 'pill-active'
+                                      : (${sub.status.name() == 'GRACE'}    ? 'pill-grace'
+                                      : 'pill-suspended')"
+                        th:text="*{status}">Active</span>
+                </td>
+                <td th:text="${#temporals.format(sub.startDate, 'MMM d, yyyy')}">Apr 1, 2026</td>
+                <td th:text="${#temporals.format(sub.endDate,   'MMM d, yyyy')}">May 1, 2026</td>
+                <td><strong>$<span th:text="*{monthlyFee}">29.99</span></strong></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(subscribers)}" class="empty-row">
+                <td colspan="7">
+                  <i class="bi bi-inbox"></i>
+                  No subscribers found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    
-    <p class="plan-sub-id">
-      Subscription ID : <strong id="card-sub-id" th:text="${activePlan.id}">0123456</strong>
-    </p>
-    
-    <div class="plan-meta">
-      <div class="meta-block">
-        <span class="meta-label"><i class="bi bi-calendar3"></i> Start Date</span>
-        <span id="card-start-date" class="meta-value"
-              th:text="${#temporals.format(activePlan.startDate, 'MMM d, yyyy')}">Apr 1, 2026</span>
-      </div>
-      <div class="meta-block">
-        <span class="meta-label"><i class="bi bi-calendar3"></i> End Date</span>
-        <span id="card-end-date" class="meta-value"
-              th:text="${#temporals.format(activePlan.endDate, 'MMM d, yyyy')}">May 1, 2026</span>
-      </div>
-      <div class="meta-block">
-        <span class="meta-label">Next Billing Amount</span>
-        <span class="meta-value">
-          $<span id="card-fee" th:text="${activePlan.monthlyFee}">29.99</span>
-          <span style="font-weight:400;font-size:12px;color:var(--text-muted)">/month</span>
-        </span>
-      </div>
-      <div class="meta-block">
-        <span class="meta-label"><i class="bi bi-box-arrow-up-right"></i> Status</span>
-        <span id="card-meta-status" class="meta-value"
-              th:classappend="${activePlan.status.name() == 'ACTIVE'}   ? 'clr-success'
-                            : (${activePlan.status.name() == 'GRACE'}   ? 'clr-warning'
-                            : 'clr-danger')"
-              th:text="${activePlan.status}">Active</span>
-      </div>
-    </div>
-  </div>
-
-  <div th:if="${activePlan == null}" class="plan-card empty-plan">
-    <i class="bi bi-calendar-x"></i>
-    No active subscription found.
-  </div>
-
- <div class="table-card">
-  <div class="table-card-header">
-    <h3>Subscriber</h3>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Subscriber</th>
-          <th>Subscription ID</th>
-          <th>Plan Name</th>
-          <th>Status</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Monthly Fee</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="sub : ${subscribers}" 
-            style="cursor: pointer;"
-            class="subscriber-row"
-            th:data-plan-name="${sub.planName}"
-            th:data-status="${sub.status.name()}"
-            th:data-id="${sub.id}"
-            th:data-start-date="${#temporals.format(sub.startDate, 'MMM d, yyyy')}"
-            th:data-end-date="${#temporals.format(sub.endDate, 'MMM d, yyyy')}"
-            th:data-fee="${sub.monthlyFee}"
-            onclick="handleRowClick(this)">
-          
-          <td><strong th:text="${sub.customer.name}">Larry Luciano</strong></td>
-          <td style="color:var(--text-muted);font-weight:600" th:text="${sub.id}">0123456</td>
-          <td th:text="${sub.planName}">Starter Plan</td>
-          <td>
-            <span class="pill"
-                  th:classappend="${sub.status.name() == 'ACTIVE'}    ? 'pill-active'
-                                : (${sub.status.name() == 'GRACE'}    ? 'pill-grace'
-                                : 'pill-suspended')"
-                  th:text="${sub.status}">Active</span>
-          </td>
-          <td th:text="${#temporals.format(sub.startDate, 'MMM d, yyyy')}">Apr 1, 2026</td>
-          <td th:text="${#temporals.format(sub.endDate,   'MMM d, yyyy')}">May 1, 2026</td>
-          <td><strong>$<span th:text="${sub.monthlyFee}">29.99</span></strong></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(subscribers)}" class="empty-row">
-          <td colspan="7">
-            <i class="bi bi-inbox"></i>
-            No subscribers found.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
     <!-- /ADMIN VIEW -->
 
   </div>

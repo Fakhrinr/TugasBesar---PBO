@@ -12,13 +12,15 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final NotificationService notificationService;
-
+    private final SubscriptionService subscriptionService;
     public InvoiceService(InvoiceRepository invoiceRepository,
-                          NotificationService notificationService) {
-        this.invoiceRepository = invoiceRepository;
-        this.notificationService = notificationService;
-    }
+                      NotificationService notificationService,
+                      SubscriptionService subscriptionService) {
 
+    this.invoiceRepository = invoiceRepository;
+    this.notificationService = notificationService;
+    this.subscriptionService = subscriptionService;
+    }
     /**
      * Create new invoice
      */
@@ -66,13 +68,34 @@ public class InvoiceService {
      * Mark invoice as paid
      */
     public void markAsPaid(int invoiceId) {
-        Invoice invoice = invoiceRepository.findById(invoiceId);
-        invoice.markAsPaid();
-        invoiceRepository.updateStatus(invoiceId, InvoiceStatus.PAID);
-        int userId = invoice.getSubscription().getCustomer().getId();
-        BigDecimal total = invoice.calculateTotal();
-        notificationService.notifyPaymentSuccess(userId, total);
-    }
+
+    Invoice invoice = invoiceRepository.findById(invoiceId);
+
+    invoice.markAsPaid();
+
+    invoiceRepository.updateStatus(
+            invoiceId,
+            InvoiceStatus.PAID
+    );
+
+
+    // AKTIFKAN SUBSCRIPTION SETELAH PEMBAYARAN
+    subscriptionService.activateSubscription(
+            invoice.getSubscription().getId()
+    );
+
+
+    int userId = invoice.getSubscription()
+            .getCustomer()
+            .getId();
+
+    BigDecimal total = invoice.calculateTotal();
+
+    notificationService.notifyPaymentSuccess(
+            userId,
+            total
+    );
+}
 
     /**
      * Check invoice status
