@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Detail - ProNet Fiber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/technician/technician-base.css}">
+    <link rel="stylesheet" th:href="@{/css/technician/ticket.css}">
+</head>
+
+<body class="technician-shell ticket-shell">
+<aside class="technician-sidebar">
+    <div class="brand-block">
+        <span class="material-symbols-outlined brand-icon">engineering</span>
+        <div>
+            <h1>bla bla</h1>
+            <p>Technician Portal</p>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Technician navigation">
+        <a class="nav-link" href="/technician/dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+        <a class="nav-link active" href="/technician/my-tickets">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            My Tickets
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="primary-sidebar-button" href="/technician/my-tickets">
+            <span class="material-symbols-outlined">task_alt</span>
+            View Assignments
+        </a>
+        <div class="footer-links">
+            <a class="nav-link" href="/logout">
+                <span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+        </div>
+    </div>
+</aside>
+
+<main class="technician-main">
+    <header class="top-app-bar">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search tickets..." aria-label="Search tickets">
+        </div>
+
+        <div class="top-actions">
+            <button type="button" class="icon-button" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="notification-dot"></span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Help">
+                <span class="material-symbols-outlined">help_outline</span>
+            </button>
+            <div class="avatar" aria-hidden="true">
+                <span>T</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="ticket-detail-canvas">
+        <section class="ticket-detail-heading">
+            <div>
+                <div class="ticket-breadcrumb">
+                    <a href="/technician/my-tickets">My Tickets</a>
+                    <span class="material-symbols-outlined">chevron_right</span>
+                    <span>
+                        #TK-<span th:text="${ticket != null ? ticket.id : '-'}">1</span>
+                    </span>
+                </div>
+                <h2 th:text="${ticket != null && ticket.title != null ? ticket.title : 'Ticket Detail'}">Ticket Detail</h2>
+                <p>
+                    Created
+                    <span th:text="${ticket != null && ticket.createdAt != null ? ticket.createdAt : '-'}">2026-06-16</span>
+                </p>
+            </div>
+
+            <a class="outline-ticket-button" href="/technician/my-tickets">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Back to Tickets
+            </a>
+        </section>
+
+        <section class="ticket-detail-grid">
+            <div class="detail-main-column">
+                <article class="detail-panel">
+                    <div class="detail-panel-header">
+                        <div>
+                            <h3>Issue Details</h3>
+                            <p>
+                                Ticket
+                                #TK-<span th:text="${ticket != null ? ticket.id : '-'}">1</span>
+                            </p>
+                        </div>
+                        <div class="detail-badges">
+                            <span class="ticket-badge priority" th:text="${ticket != null && ticket.priority != null ? ticket.priority : 'NORMAL'}">HIGH</span>
+                            <span class="ticket-badge status" th:text="${ticket != null && ticket.status != null ? ticket.status : 'OPEN'}">OPEN</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-copy">
+                        <p th:text="${ticket != null && ticket.description != null ? ticket.description : 'No description provided.'}">
+                            Customer reported a connection issue.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="detail-panel">
+                    <div class="detail-panel-header">
+                        <div>
+                            <h3>Status Workflow</h3>
+                            <p>Move the ticket through the technician workflow.</p>
+                        </div>
+                    </div>
+
+                    <div class="workflow-steps">
+                        <div class="workflow-step complete">
+                            <span class="workflow-marker"></span>
+                            <div>
+                                <p>Open</p>
+                                <small>Ticket is ready to be worked on.</small>
+                            </div>
+                        </div>
+                        <div class="workflow-step"
+                             th:classappend="${ticket != null && (ticket.status == 'IN_PROGRESS' || ticket.status == 'RESOLVED' || ticket.status == 'CLOSED') ? ' complete' : ''}">
+                            <span class="workflow-marker"></span>
+                            <div>
+                                <p>In Progress</p>
+                                <small>Technician has started work.</small>
+                            </div>
+                        </div>
+                        <div class="workflow-step"
+                             th:classappend="${ticket != null && (ticket.status == 'RESOLVED' || ticket.status == 'CLOSED') ? ' complete' : ''}">
+                            <span class="workflow-marker"></span>
+                            <div>
+                                <p>Resolved</p>
+                                <small>Issue has been resolved.</small>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="detail-side-column">
+                <article class="detail-panel action-panel">
+                    <h3>Technician Action</h3>
+
+                    <div class="current-status">
+                        <span>Current Status</span>
+                        <strong th:text="${ticket != null && ticket.status != null ? ticket.status : 'OPEN'}">OPEN</strong>
+                    </div>
+
+                    <form th:if="${ticket != null && ticket.status == 'OPEN'}"
+                          th:action="@{/technician/my-tickets/{id}/start(id=${ticket.id})}"
+                          method="post">
+                        <button type="submit" class="primary-action-button">
+                            <span class="material-symbols-outlined">play_arrow</span>
+                            Start Work
+                        </button>
+                    </form>
+
+                    <form th:if="${ticket != null && ticket.status == 'IN_PROGRESS'}"
+                          th:action="@{/technician/my-tickets/{id}/resolve(id=${ticket.id})}"
+                          method="post">
+                        <button type="submit" class="primary-action-button success">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Resolve Ticket
+                        </button>
+                    </form>
+
+                    <div class="completed-state" th:if="${ticket != null && ticket.status == 'RESOLVED'}">
+                        <span class="material-symbols-outlined">verified</span>
+                        <div>
+                            <p>Completed</p>
+                            <small>This ticket has been resolved.</small>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="detail-panel meta-panel">
+                    <h3>Ticket Metadata</h3>
+                    <dl>
+                        <div>
+                            <dt>Ticket ID</dt>
+                            <dd th:text="${ticket != null ? ticket.id : '-'}">1</dd>
+                        </div>
+                        <div>
+                            <dt>Priority</dt>
+                            <dd th:text="${ticket != null && ticket.priority != null ? ticket.priority : 'NORMAL'}">HIGH</dd>
+                        </div>
+                        <div>
+                            <dt>Status</dt>
+                            <dd th:text="${ticket != null && ticket.status != null ? ticket.status : 'OPEN'}">OPEN</dd>
+                        </div>
+                        <div>
+                            <dt>Created At</dt>
+                            <dd th:text="${ticket != null && ticket.createdAt != null ? ticket.createdAt : '-'}">2026-06-16</dd>
+                        </div>
+                    </dl>
+                </article>
+            </aside>
+        </section>
+    </div>
+</main>
+</body>
+</html>

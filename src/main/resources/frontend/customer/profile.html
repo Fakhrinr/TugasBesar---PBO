@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+
+```
+<link rel="stylesheet" href="/css/customer/profile.css">
+```
+
+</head>
+
+<body>
+
+<div class="layout">
+
+```
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo-section">
+        <h2>ProNet Fiber</h2>
+        <p>Customer Portal</p>
+    </div>
+
+    <nav>
+
+        <a href="/customer/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/customer/services">
+            My Services
+        </a>
+
+        <a href="/customer/billing">
+            Billing
+        </a>
+
+        <a href="/customer/tickets">
+            Support Tickets
+        </a>
+
+        <a href="/customer/profile"
+           class="active">
+            Profile
+        </a>
+
+    </nav>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+
+<main class="main-content">
+
+    <header class="page-header">
+
+        <h1>My Profile</h1>
+
+        <p>
+            Manage your account information.
+        </p>
+
+    </header>
+
+    <!-- PROFILE CARD -->
+
+    <section class="profile-card">
+
+        <div class="profile-header">
+
+            <div class="avatar">
+
+                <span>
+                    C
+                </span>
+
+            </div>
+
+            <div>
+
+                <h2 th:text="${customer.name}">
+                    Customer Name
+                </h2>
+
+                <p>
+                    Customer Account
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- PERSONAL INFORMATION -->
+
+    <section class="detail-card">
+
+        <h2>Personal Information</h2>
+
+        <div class="profile-grid">
+
+            <div>
+
+                <strong>Name</strong>
+
+                <p th:text="${customer.name}">
+                    Customer Name
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Email</strong>
+
+                <p th:text="${customer.email}">
+                    customer@email.com
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Phone</strong>
+
+                <p th:text="${customer.phone}">
+                    08123456789
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Address</strong>
+
+                <p th:text="${customer.address}">
+                    Customer Address
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ACTIVE SUBSCRIPTION -->
+
+    <section class="detail-card">
+
+        <h2>Active Subscription</h2>
+
+        <div class="profile-grid">
+
+            <div>
+
+                <strong>Plan Name</strong>
+
+                <p th:text="${subscription.planName}">
+                    Fiber 100 Mbps
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Status</strong>
+
+                <p th:text="${subscription.status}">
+                    ACTIVE
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Monthly Fee</strong>
+
+                <p th:text="${subscription.monthlyFee}">
+                    350000
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>End Date</strong>
+
+                <p th:text="${subscription.endDate}">
+                    2026-12-31
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ACCOUNT STATISTICS -->
+
+    <section class="detail-card">
+
+        <h2>Account Statistics</h2>
+
+        <div class="profile-grid">
+
+            <div>
+
+                <strong>Total Tickets</strong>
+
+                <p th:text="${totalTickets}">
+                    0
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Open Tickets</strong>
+
+                <p th:text="${openTickets}">
+                    0
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Total Invoices</strong>
+
+                <p th:text="${totalInvoices}">
+                    0
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>Outstanding Bills</strong>
+
+                <p th:text="${outstandingBills}">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+```
+
+</div>
+
+</body>
+
+</html>
