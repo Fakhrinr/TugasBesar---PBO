@@ -10,37 +10,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
     <link rel="stylesheet" th:href="@{/css/customer/services.css}">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet"
+      th:href="@{/css/sidebar.css}">
 </head>
 
 <body class="customer-shell">
-<aside class="customer-sidebar services-sidebar">
-    <div class="brand-block">
-        <span class="material-symbols-outlined brand-icon">router</span>
-        <div>
-            <h1>blabla</h1>
-            <p>Customer Portal</p>
-        </div>
+<aside class="sidebar">
+
+    <div class="s-brand">
+        <i class="bi bi-grid-fill"></i>
     </div>
 
-    <nav class="sidebar-nav" aria-label="Customer navigation">
-        <a class="nav-link" href="/customer/dashboard">
-            <span class="material-symbols-outlined">dashboard</span>
-            Dashboard
-        </a>
-        <a class="nav-link active" href="/customer/services">
-            <span class="material-symbols-outlined">router</span>
-            My Services
-        </a>
-        <a class="nav-link" href="/customer/billing">
-            <span class="material-symbols-outlined">payments</span>
-            Billing
-        </a>
-        <a class="nav-link" href="/customer/tickets">
-            <span class="material-symbols-outlined">confirmation_number</span>
-            Support Tickets
-        </a>
-        
-    </nav>
+    <a th:href="@{/customer/dashboard}"
+       class="s-link"
+       title="Dashboard">
+        <i class="bi bi-grid"></i>
+    </a>
+
+    <a th:href="@{/customer/billing}"
+       class="s-link"
+       title="Billing">
+        <i class="bi bi-receipt"></i>
+    </a>
+
+    <a th:href="@{/customer/tickets}"
+       class="s-link"
+       title="Tickets">
+        <i class="bi bi-ticket-perforated"></i>
+    </a>
+
+    <hr/>
+
+    <a th:href="@{/auth/logout}"
+       class="s-link s-logout"
+       title="Logout">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+
 </aside>
 
 <main class="customer-main">

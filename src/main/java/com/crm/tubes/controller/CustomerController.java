@@ -144,14 +144,26 @@ public String dashboard(Model model) {
 @GetMapping("/services")
 public String services(Model model) {
 
-    Subscription subscription =
-            subscriptionService
-                    .getActiveSubscriptionByCustomer(CUSTOMER_ID);
+    try {
 
-    model.addAttribute(
-            "subscription",
-            subscription
-    );
+        Subscription subscription =
+                subscriptionService
+                        .getActiveSubscriptionByCustomer(CUSTOMER_ID);
+
+        model.addAttribute(
+                "subscription",
+                subscription
+        );
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        model.addAttribute(
+                "subscription",
+                null
+        );
+    }
 
     return "customer/services";
 }
