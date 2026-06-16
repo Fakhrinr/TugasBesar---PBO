@@ -79,11 +79,8 @@ public class SubscriptionService {
 
     Subscription subscription = subscriptionRepository.findById(subscriptionId);
 
-    subscription.activate();
+    subscription.renewFromNow();
 
-    subscriptionRepository.updateStatus(
-            subscription.getId(),
-            subscription.getStatus()
-    );
-}
+    subscriptionRepository.updateFullSubscription(subscription);
+    }
 }

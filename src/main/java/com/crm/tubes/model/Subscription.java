@@ -84,4 +84,12 @@ public class Subscription {
             this.status = SubscriptionStatus.ACTIVE;
         }
     }
+
+    public void renewFromNow() {
+    LocalDate today = LocalDate.now();
+
+    this.status = SubscriptionStatus.ACTIVE;
+    this.startDate = today;
+    this.endDate = today.plusMonths(1);
+    }
 }

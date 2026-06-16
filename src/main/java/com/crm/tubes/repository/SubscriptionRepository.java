@@ -110,5 +110,24 @@ public class SubscriptionRepository {
             subscriptionRowMapper,
             id
     );
-}
+    }
+
+    public void updateFullSubscription(Subscription sub) {
+
+    String sql = """
+        UPDATE subscription
+        SET status = ?,
+            start_date = ?,
+            end_date = ?
+        WHERE id = ?
+    """;
+
+    jdbcTemplate.update(
+        sql,
+        sub.getStatus().name(),
+        sub.getStartDate(),
+        sub.getEndDate(),
+        sub.getId()
+    );
+    }
 }
