@@ -26,7 +26,7 @@
         <a th:href="@{/notifications}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
         <a th:href="@{/technician/my-tickets}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
         <hr/>
-        <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+        <a th:href="@{/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
     </aside>
 
   <!-- ── Main ─────────────────────────────────────────────── -->
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="topbar-right">
-        <a th:href="@{/notifications/user/{id}(id=${user?.id})}" class="btn-icon">
+        <a th:href="@{/notifications}" class="btn-icon">
           <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zM10 18a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3z"/></svg>
           <span class="notif-dot"></span>
         </a>
@@ -235,7 +235,7 @@
                 <td style="font-weight:600;color:var(--primary)" th:text="'INV-' + ${inv.id}">INV-1</td>
                 <td th:text="${inv.subscription?.customer?.name ?: '-'}">Customer</td>
                 <td th:text="${inv.subscription?.planName ?: '-'}">Paket</td>
-                <td th:text="'Rp ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">Rp 0</td>
+                <td th:text="'$ ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">$ 0</td>
                 <td th:text="${#temporals.format(inv.dueDate, 'dd MMM yyyy')}">01 Jan 2024</td>
                 <td>
                   <span class="badge"

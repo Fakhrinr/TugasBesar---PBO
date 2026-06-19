@@ -179,7 +179,7 @@ button {
     width: calc(100% - var(--sidebar-width));
     height: var(--topbar-height);
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     border-bottom: 1px solid var(--color-outline);
     background: rgba(255, 255, 255, 0.92);
     padding: 0 32px;

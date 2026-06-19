@@ -209,7 +209,6 @@ CREATE TABLE ticket (
         ON DELETE SET NULL                             -- teknisi dihapus → ticket tetap ada
 );
 
-
 -- ============================================================
 -- SAMPLE DATA (untuk testing)
 -- Bisa dihapus kalau sudah production
@@ -220,12 +219,24 @@ INSERT INTO user (name, email, password, role, status) VALUES
 ('Admin CRM',       'admin@crm.com',    'admin123',   'ADMIN',            TRUE),
 ('Larry Luciano',   'larry@gmail.com',  'larry123',   'CUSTOMER',         TRUE),
 ('Diana Reyes',     'diana@gmail.com',  'diana123',   'CUSTOMER',         TRUE),
-('Andi Teknisi',    'andi@crm.com',     'andi123',    'TEKNISI',          TRUE);
+('Andi Teknisi',    'andi@crm.com',     'andi123',    'TEKNISI',          TRUE),
+('Budi Santoso',    'budi@gmail.com',   'budi123',    'CUSTOMER',         TRUE),
+('Siti Rahma',      'siti@gmail.com',   'siti123',    'CUSTOMER',         TRUE),
+('Roni Wijaya',     'roni@gmail.com',   'roni123',    'CUSTOMER',         TRUE),
+-- 🌟 TAMBAHAN USER UNTUK TESTING OVERDUE
+('Denny Siregar',   'denny@gmail.com',  'denny123',   'CUSTOMER',         TRUE),
+('Maya Estianty',   'maya@gmail.com',   'maya123',    'CUSTOMER',         TRUE);
 
 -- Sample customers (linked to user)
 INSERT INTO customer (user_id, address, phone) VALUES
-(2, 'Jl. Merdeka No. 1, Bandung',   '081234567890'),  -- Larry
-(3, 'Jl. Sudirman No. 5, Jakarta',  '081298765432');  -- Diana
+(2, 'Jl. Merdeka No. 1, Bandung',   '081234567890'),  -- Larry (Customer ID 1)
+(3, 'Jl. Sudirman No. 5, Jakarta',  '081298765432'),  -- Diana (Customer ID 2)
+(5, 'Jl. Dago No. 45, Bandung',     '081344556677'),  -- Budi (Customer ID 3)
+(6, 'Jl. Malioboro No. 12, Jogja',  '081722334455'),  -- Siti (Customer ID 4)
+(7, 'Jl. Diponegoro No. 8, Surabaya','081988776655'), -- Roni (Customer ID 5)
+-- 🌟 TAMBAHAN CUSTOMER UNTUK TESTING OVERDUE
+(8, 'Jl. Gatsu No. 100, Bali',      '081211223344'),  -- Denny (Customer ID 6)
+(9, 'Jl. Pemuda No. 3, Semarang',   '081399887766');  -- Maya (Customer ID 7)
 
 -- Sample staff
 INSERT INTO staff (user_id, employee_id) VALUES
@@ -234,9 +245,15 @@ INSERT INTO staff (user_id, employee_id) VALUES
 
 -- Sample subscriptions
 INSERT INTO subscription (customer_id, plan_name, start_date, end_date, monthly_fee, status) VALUES
-(1, 'Starter Plan',  '2026-04-01', '2026-05-01', 29.99, 'ACTIVE'),
-(2, 'Pro Plan',      '2026-05-15', '2026-06-18', 59.99, 'GRACE'),
-(2, 'Starter Plan',  '2026-06-15', '2026-07-15', 59.99, 'ACTIVE');-- subscription baru untuk Diana, mulai 15 Juni
+(1, 'Starter Plan',  '2026-04-01', '2026-05-01', 29.99, 'ACTIVE'),    -- Larry
+(2, 'Pro Plan',      '2026-03-15', '2026-04-15', 59.99, 'GRACE'),     -- Diana
+(3, 'Enterprise Plan','2026-01-10', '2026-02-10', 129.99,'ACTIVE'),    -- Budi
+(4, 'Starter Plan',  '2026-05-20', '2026-06-20', 29.99, 'ACTIVE'),    -- Siti
+(5, 'Pro Plan',      '2025-12-01', '2026-01-01', 59.99, 'SUSPENDED'), -- Roni
+(1, 'Basic Plan',    '2025-06-01', '2025-12-01', 19.99, 'SUSPENDED'), -- Larry (Riwayat)
+-- 🌟 TAMBAHAN SUBSCRIPTION UNTUK TESTING OVERDUE
+(6, 'Pro Plan',      '2026-04-10', '2026-05-10', 59.99, 'GRACE'),     -- Denny (Sub ID 7)
+(7, 'Enterprise Plan','2026-03-01', '2026-04-01', 129.99,'SUSPENDED');-- Maya (Sub ID 8)
 
 -- Sample invoices
 INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
@@ -254,3 +271,13 @@ INSERT INTO ticket (customer_id, technician_id, title, description, priority, st
 (2, 4, 'Router tidak bisa connect',  'Lampu WAN di router berkedip terus, tidak ada koneksi.',              'HIGH',   'IN_PROGRESS'),
 (2, 4, 'Tagihan tidak sesuai',       'Tagihan bulan ini berbeda dari biasanya, mohon dicek.',               'LOW',    'RESOLVED'),
 (1, 4, 'Gangguan intermittent',      'Koneksi sering putus-putus setiap beberapa menit.',                   'URGENT', 'OPEN');
+INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
+(3, '2026-06-10', '2026-06-25', 129.99, 0, 'OPEN');
+
+INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
+(4, '2026-06-12', '2026-06-27', 29.99, 0, 'OPEN');
+
+-- 🌟 TAMBAHAN INVOICE STATUS OVERDUE (Jatuh tempo Mei & Awal Juni 2026)
+INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
+(7, '2026-05-10', '2026-05-25', 59.99, 5.00, 'OVERDUE'),  -- Denny (Lewat tempo, kena denda $5)
+(8, '2026-04-01', '2026-04-15', 129.99, 15.00, 'OVERDUE'); -- Maya (Lewat jauh, kena denda $15)

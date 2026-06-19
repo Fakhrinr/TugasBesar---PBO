@@ -1,6 +1,7 @@
 package com.crm.tubes.repository;
 
 import java.util.List;
+import java.sql.Date;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -117,21 +118,22 @@ public class SubscriptionRepository {
     );
     }
 
-    public void updateFullSubscription(Subscription sub) {
+    public void updateSubscription(Subscription sub){
 
     String sql = """
         UPDATE subscription
-        SET status = ?,
-            start_date = ?,
-            end_date = ?
+        SET start_date = ?,
+            end_date = ?,
+            status = ?
         WHERE id = ?
-    """;
+        """;
+
 
     jdbcTemplate.update(
         sql,
+        Date.valueOf(sub.getStartDate()),
+        Date.valueOf(sub.getEndDate()),
         sub.getStatus().name(),
-        sub.getStartDate(),
-        sub.getEndDate(),
         sub.getId()
     );
     }

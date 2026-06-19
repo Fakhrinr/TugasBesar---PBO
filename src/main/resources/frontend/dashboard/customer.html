@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customer Dashboard – CRM Tubes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+        <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
+        <a th:href="@{/dashboard}"    class="s-link active"        title="Dashboard">    <i class="bi bi-grid"></i></a>
+        <a th:href="@{/invoices}"      class="s-link"        title="Billing">      <i class="bi bi-receipt"></i></a>
+        <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
+        <a th:href="@{/notifications}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
+        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <hr/>
+        <a th:href="@{/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
+    </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon" id="menuToggle" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 5a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+        <div>
+          <div class="page-title">Dashboard Customer</div>
+          <div class="page-subtitle">Halo, <span th:text="${user?.name ?: 'Customer'}">Customer</span> 👋</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a th:href="@{/notifications/user/{id}(id=${user?.id})}" class="btn-icon">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zM10 18a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3z"/></svg>
+          <span class="notif-dot"></span>
+        </a>
+        <div class = "avatar" th:text="${#strings.substring(user.name,0,2).toUpperCase()}">AD</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Flash messages -->
+      <div class="alert alert-success" th:if="${successMsg}" th:text="${successMsg}"></div>
+      <div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
+
+      <!-- ── Stat Cards ──────────────────────────────────── -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Status Subscription</span>
+            <div class="stat-icon cyan">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 .379 1.388 3.066 3.066 0 0 0-.723 4.764l.028.028a3.073 3.073 0 0 0 4.14.504 3.066 3.066 0 0 0 4.764-.722 3.066 3.066 0 0 0 1.388-.38 3.066 3.066 0 0 0 0-5.858 3.066 3.066 0 0 0-1.388-.379 3.066 3.066 0 0 0-4.764-.723 3.066 3.066 0 0 0-4.14.503l-.028.029a3.066 3.066 0 0 0-.379 1.388z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.subscription?.status?.name() ?: '-'}">-</div>
+          <div class="stat-footer" th:text="${data?.subscription?.planName ?: 'Belum ada paket'}">Belum ada paket</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Berakhir Pada</span>
+            <div class="stat-icon blue">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 0 0-1 1v1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1V3a1 1 0 1 0-2 0v1H7V3a1 1 0 0 0-1-1zM4 8h12v8H4V8z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" style="font-size:18px" th:text="${data?.subscription?.endDate != null ? #temporals.format(data?.subscription?.endDate, 'dd MMM yyyy') : '-'}">-</div>
+          <div class="stat-footer">Tanggal expired</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Invoice Belum Bayar</span>
+            <div class="stat-icon yellow">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4zm3 5a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H7z" clip-rule="evenodd"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.unpaidInvoiceCount ?: 0}">0</div>
+          <div class="stat-footer">Perlu dibayar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Ticket Saya</span>
+            <div class="stat-icon red">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V5z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" th:text="${data?.myTicketCount ?: 0}">0</div>
+          <div class="stat-footer">Total ticket dibuat</div>
+        </div>
+      </div>
+
+      <!-- ── Row: Subscription Info + Buat Ticket ────────── -->
+      <div class="section-row">
+        <!-- Subscription Detail -->
+        <div class="card section-col-2">
+          <div class="card-header">
+            <span class="card-title">Subscription Saya</span>
+            <a th:href="@{/subscription}" class="link">Detail →</a>
+          </div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Paket</th>
+                  <th>Mulai</th>
+                  <th>Berakhir</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:if="${data?.subscription != null}">
+                  <td th:text="${data?.subscription?.planName}">Paket</td>
+                  <td th:text="${#temporals.format(data?.subscription?.startDate, 'dd MMM yyyy')}">01 Jan 2024</td>
+                  <td th:text="${#temporals.format(data?.subscription?.endDate, 'dd MMM yyyy')}">01 Jan 2025</td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${data?.subscription?.status?.name() == 'ACTIVE' ? 'badge-active' : (data?.subscription?.status?.name() == 'GRACE' ? 'badge-grace' : 'badge-suspended')}"
+                          th:text="${data?.subscription?.status?.name()}">ACTIVE</span>
+                  </td>
+                </tr>
+                <tr th:if="${data?.subscription == null}">
+                  <td colspan="4">
+                    <div class="empty-state"><p>Kamu belum memiliki subscription</p></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      <!-- ── My Tickets ──────────────────────────────────── -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <span class="card-title">Ticket Saya</span>
+          <a th:href="@{/tickets}" class="link">Lihat Semua →</a>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Judul</th>
+                <th>Prioritas</th>
+                <th>Status</th>
+                <th>Dibuat</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="t : ${data?.myTickets}" th:if="${data?.myTickets != null}">
+                <td style="font-weight:600;color:var(--primary)" th:text="'#TK-' + ${t.id}">#TK-1</td>
+                <td>
+                  <div style="font-weight:500" th:text="${t.title}">Judul</div>
+                  <div style="font-size:12px;color:var(--gray-400)" th:text="${#strings.abbreviate(t.description ?: '', 50)}">Deskripsi...</div>
+                </td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${t.priority == 'HIGH' ? 'badge-high' : (t.priority == 'MEDIUM' ? 'badge-medium' : 'badge-low')}"
+                        th:text="${t.priority}">MEDIUM</span>
+                </td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${t.status == 'OPEN' ? 'badge-open' : (t.status == 'IN_PROGRESS' ? 'badge-in-progress' : (t.status == 'RESOLVED' ? 'badge-resolved' : 'badge-closed'))}"
+                        th:text="${t.status}">OPEN</span>
+                </td>
+                <td style="font-size:12px;color:var(--gray-400)"
+                    th:text="${t.createdAt != null ? #dates.format(t.createdAt, 'dd MMM yyyy') : '-'}">01 Jan 2024</td>
+              </tr>
+              <tr th:if="${data?.myTickets == null or #lists.isEmpty(data?.myTickets)}">
+                <td colspan="5">
+                  <div class="empty-state"><p>Kamu belum membuat ticket</p></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── My Invoices ─────────────────────────────────── -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Invoice Saya</span>
+          <a th:href="@{/invoices}" class="link">Lihat Semua →</a>
+        </div>
+        <div class="card-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paket</th>
+                <th>Total</th>
+                <th>Jatuh Tempo</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="inv : ${data?.myInvoices}" th:if="${data?.myInvoices != null}">
+                <td style="font-weight:600;color:var(--primary)" th:text="'INV-' + ${inv.id}">INV-1</td>
+                <td th:text="${inv.subscription?.planName ?: '-'}">Paket</td>
+                <td th:text="'$ ' + ${#numbers.formatDecimal(inv.calculateTotal(), 0, 'COMMA', 0, 'POINT')}">$ 0</td>
+                <td th:text="${#temporals.format(inv.dueDate, 'dd MMM yyyy')}">01 Jan 2024</td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${inv.status?.name() == 'PAID' ? 'badge-paid' : (inv.status?.name() == 'OVERDUE' ? 'badge-overdue' : (inv.status?.name() == 'OPEN' ? 'badge-open-inv' : 'badge-draft'))}"
+                        th:text="${inv.status?.name()}">OPEN</span>
+                </td>
+                <td>
+                  <div style="display:flex;gap:4px;flex-wrap:wrap">
+                    <!-- Bayar (jika belum PAID) -->
+                    <form th:if="${inv.status?.name() != 'PAID'}"
+                          th:action="@{/invoices/{id}/pay(id=${inv.id})}" method="post" style="display:inline">
+                      <button type="submit" class="btn btn-sm btn-success">Bayar</button>
+                    </form>
+                    <!-- Sudah lunas -->
+                    <span th:if="${inv.status?.name() == 'PAID'}"
+                          style="font-size:12px;color:var(--success);padding:5px 0;font-weight:600">
+                      Lunas ✓
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              <tr th:if="${data?.myInvoices == null or #lists.isEmpty(data?.myInvoices)}">
+                <td colspan="6">
+                  <div class="empty-state"><p>Belum ada invoice</p></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

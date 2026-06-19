@@ -4,8 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Notification</title>
 
@@ -18,31 +17,63 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Shared sidebar -->
-    <link rel="stylesheet"
-          th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 
-    <!-- Notification stylesheet -->
-    <link rel="stylesheet"
-          th:href="@{/css/notification.css}">
+    <!-- Notification CSS -->
+    <link rel="stylesheet" th:href="@{/css/notification.css}">
 </head>
 
 <body>
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-  <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
-  <a th:href="@{/dashboard}"    class="s-link"        title="Dashboard">    <i class="bi bi-grid"></i></a>
-  <a th:href="@{/invoices}"     class="s-link"        title="Billing">      <i class="bi bi-receipt"></i></a>
-  <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
-  <a th:href="@{/notifications}" class="s-link active" title="Notification"> <i class="bi bi-bell"></i></a>
-  <a th:href="@{/technician/my-tickets}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
-  <hr/>
-    <a th:href="@{/auth/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
-    </aside>
+    <!-- ═════ SIDEBAR ═════ -->
+<aside class="sidebar">
+    <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
 
-    <!-- MAIN CONTENT -->
+    <!-- DASHBOARD -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/dashboard} : @{/dashboard}"
+       class="s-link"
+       title="Dashboard">
+        <i class="bi bi-grid"></i>
+    </a>
+
+    <!-- INVOICES -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/invoices} : @{/invoices}"
+       class="s-link"
+       title="Billing">
+        <i class="bi bi-receipt"></i>
+    </a>
+
+    <!-- SUBSCRIPTION -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/subscription} : @{/subscription}"
+       class="s-link"
+       title="Subscription">
+        <i class="bi bi-calendar-check"></i>
+    </a>
+
+    <!-- NOTIFICATION -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/notifications} : @{/notifications}"
+       class="s-link active"
+       title="Notification">
+        <i class="bi bi-bell"></i>
+    </a>
+
+    <!-- TICKETS -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/customer/tickets} : @{/tickets}"
+       class="s-link"
+       title="Tickets">
+        <i class="bi bi-ticket-perforated"></i>
+    </a>
+
+    <hr/>
+
+    <a th:href="@{/logout}" class="s-link s-logout">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
+</aside>
+
+    <!-- ═════ MAIN ═════ -->
     <main class="content notification-content">
 
         <!-- HEADER -->
@@ -51,17 +82,14 @@
             <div class="header-title">
                 <h2>Notification</h2>
 
-                <!-- ADMIN -->
                 <p th:if="${loggedUser.role.name() == 'ADMIN'}">
                     Monitor system activities and important updates.
                 </p>
 
-                <!-- CUSTOMER -->
                 <p th:if="${loggedUser.role.name() == 'CUSTOMER'}">
-                    View billing, payment, subscription, and ticket updates.
+                    View billing, subscription, and ticket updates.
                 </p>
 
-                <!-- TEKNISI -->
                 <p th:if="${loggedUser.role.name() == 'TEKNISI'}">
                     View ticket assignments and service updates.
                 </p>
@@ -69,295 +97,147 @@
 
             <div class="header-actions">
 
-                <a th:href="@{/notifications}"
-                class="header-notification-button"
-                title="Notification">
-
-                <i class="fa-regular fa-bell"></i>
-
-                <span th:if="${unreadCount > 0}"
-                th:text="${unreadCount}"
-                class="notification-count">
-                0
-                </span>
-                </a>
-
                 <div class="avatar"
-                th:text="${#strings.substring(loggedUser.name, 0, 2).toUpperCase()}">
-                AB
+                     th:text="${#strings.substring(loggedUser.name, 0, 2).toUpperCase()}">
+                    AB
                 </div>
-        </div>
 
+            </div>
 
         </header>
 
         <!-- FLASH MESSAGE -->
-        <div class="alert alert-success"
-             th:if="${successMessage}">
-
-            <i class="fa-solid fa-circle-check"></i>
-
-            <span th:text="${successMessage}">
-                Success
-            </span>
-
-            <button type="button"
-                    class="alert-close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+        <div class="alert alert-success" th:if="${successMessage}">
+            <span th:text="${successMessage}">Success</span>
         </div>
 
-        <div class="alert alert-error"
-             th:if="${errorMessage}">
-
-            <i class="fa-solid fa-circle-exclamation"></i>
-
-            <span th:text="${errorMessage}">
-                Error
-            </span>
-
-            <button type="button"
-                    class="alert-close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+        <div class="alert alert-error" th:if="${errorMessage}">
+            <span th:text="${errorMessage}">Error</span>
         </div>
 
-        <!-- NOTIFICATION SUMMARY -->
-        <section class="notification-summary">
+        <!-- ═════════ CUSTOMER VIEW ═════════ -->
+        <div th:if="${loggedUser.role.name() == 'CUSTOMER'}">
 
-            <div>
-                <h2>Your Notifications</h2>
-
-                <p>
-                    You have
-                    <strong th:text="${unreadCount}">0</strong>
-                    unread notifications.
-                </p>
-            </div>
-
-            <form th:if="${unreadCount > 0}"
-                  th:action="@{/notifications/read-all}"
-                  method="post">
-
-                <button type="submit"
-                        class="mark-all-button">
-
-                    <i class="fa-solid fa-check-double"></i>
-                    Mark All as Read
-
-                </button>
-
-            </form>
-
-        </section>
-
-        <!-- TOOLBAR -->
-        <section class="notification-toolbar">
-
-            <div class="search-wrapper">
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input type="text"
-                       id="notificationSearch"
-                       placeholder="Search notification...">
-            </div>
-
-            <select id="notificationTypeFilter">
-                <option value="ALL">All Types</option>
-                <option value="INVOICE_CREATED">Invoice Created</option>
-                <option value="PAYMENT_DUE">Payment Due</option>
-                <option value="PAYMENT_OVERDUE">Payment Overdue</option>
-                <option value="PAYMENT_SUCCESS">Payment Success</option>
-                <option value="SUBSCRIPTION_STATUS">Subscription</option>
-                <option value="TICKET_STATUS">Ticket Status</option>
-                <option value="ACCOUNT_STATUS">Account Status</option>
-                <option value="GENERAL">General</option>
-            </select>
-
-            <select id="notificationStatusFilter">
-                <option value="ALL">All Status</option>
-                <option value="UNREAD">Unread</option>
-                <option value="READ">Read</option>
-            </select>
-
-        </section>
-
-        <!-- EMPTY DATABASE -->
-        <section class="empty-state"
-                 th:if="${#lists.isEmpty(notifications)}">
-
-            <div class="empty-icon">
-                <i class="fa-regular fa-bell-slash"></i>
-            </div>
-
-            <h3>No notifications yet</h3>
-
-            <p>
-                New updates will appear on this page.
-            </p>
-
-        </section>
-
-        <!-- NOTIFICATION LIST -->
-        <section class="notification-list"
-                 id="notificationList"
-                 th:unless="${#lists.isEmpty(notifications)}">
-
-            <article th:each="notification : ${notifications}"
-                     th:class="|notification-card ${notification.read ? 'is-read' : 'is-unread'}|"
-                     th:attr="
-                        data-message=${notification.message},
-                        data-type=${notification.type.name()},
-                        data-status=${notification.read ? 'READ' : 'UNREAD'}
-                     ">
-
-                <!-- TYPE ICON -->
-                <div th:class="|notification-type-icon type-${#strings.toLowerCase(notification.type.name())}|">
-
-                    <!-- Payment -->
-                    <i th:if="${#strings.startsWith(notification.type.name(), 'PAYMENT')}"
-                       class="fa-solid fa-credit-card">
-                    </i>
-
-                    <!-- Invoice -->
-                    <i th:if="${notification.type.name() == 'INVOICE_CREATED'}"
-                       class="fa-solid fa-file-invoice">
-                    </i>
-
-                    <!-- Subscription -->
-                    <i th:if="${notification.type.name() == 'SUBSCRIPTION_STATUS'}"
-                       class="fa-solid fa-calendar-check">
-                    </i>
-
-                    <!-- Ticket -->
-                    <i th:if="${notification.type.name() == 'TICKET_STATUS'}"
-                       class="fa-solid fa-ticket">
-                    </i>
-
-                    <!-- Account -->
-                    <i th:if="${notification.type.name() == 'ACCOUNT_STATUS'}"
-                       class="fa-solid fa-user-shield">
-                    </i>
-
-                    <!-- General -->
-                    <i th:if="${notification.type.name() == 'GENERAL'}"
-                       class="fa-solid fa-bullhorn">
-                    </i>
-
+            <section class="notification-summary">
+                <div>
+                    <h2>Your Notifications</h2>
+                    <p>
+                        You have <strong th:text="${unreadCount}">0</strong> unread notifications.
+                    </p>
                 </div>
 
-                <!-- NOTIFICATION CONTENT -->
-                <div class="notification-content">
+                <form th:if="${unreadCount > 0}"
+                      th:action="@{/notifications/read-all}"
+                      method="post">
 
-                    <div class="notification-heading">
+                    <button class="mark-all-button" type="submit">
+                        Mark All as Read
+                    </button>
 
-                        <div class="notification-title-wrapper">
+                </form>
+            </section>
 
-                            <span class="notification-type"
-                                  th:text="${#strings.replace(notification.type.name(), '_', ' ')}">
-                                GENERAL
-                            </span>
+            <!-- LIST -->
+            <section class="notification-list"
+                     th:if="${!#lists.isEmpty(notifications)}">
 
-                            <span class="unread-indicator"
-                                  th:if="${!notification.read}">
-                            </span>
+                <article th:each="notification : ${notifications}"
+                         th:class="|notification-card ${notification.read ? 'is-read' : 'is-unread'}|">
 
-                        </div>
+                    <div class="notification-content">
 
-                        <span th:if="${notification.read}"
-                              class="read-label">
-                            Read
+                        <span class="notification-type"
+                              th:text="${#strings.replace(notification.type.name(), '_', ' ')}">
                         </span>
 
-                        <span th:unless="${notification.read}"
-                              class="unread-label">
-                            New
-                        </span>
+                        <p th:text="${notification.message}"></p>
+
+                        <small th:text="${notification.createdAt}"></small>
 
                     </div>
 
-                    <p class="notification-message"
-                       th:text="${notification.message}">
-                        Notification message
-                    </p>
+                </article>
 
-                    <div class="notification-footer">
+            </section>
 
-                        <div class="notification-time">
+            <section th:if="${#lists.isEmpty(notifications)}"
+                     class="empty-state">
+                <i class="fa-regular fa-bell-slash"></i>
+                <h3>No notifications yet</h3>
+                <p>New updates will appear here.</p>
+            </section>
 
-                            <i class="fa-regular fa-clock"></i>
+        </div>
 
-                            <time class="time-ago"
-                                  th:attr="data-created-at=${notification.createdAt}"
-                                  th:text="${notification.createdAt}">
-                                Just now
-                            </time>
+        <!-- ═════════ ADMIN / TEKNISI VIEW ═════════ -->
+        <div th:if="${loggedUser.role.name() == 'ADMIN' or loggedUser.role.name() == 'TEKNISI'}">
 
-                        </div>
+            <section class="notification-summary">
+
+                <div>
+                    <h2>System Notifications</h2>
+                    <p>Total unread: <strong th:text="${unreadCount}">0</strong></p>
+                </div>
+
+                <form th:if="${unreadCount > 0}"
+                      th:action="@{/notifications/read-all}"
+                      method="post">
+
+                    <button class="mark-all-button" type="submit">
+                        Mark All as Read
+                    </button>
+
+                </form>
+
+            </section>
+
+            <!-- LIST -->
+            <section class="notification-list"
+                     th:if="${!#lists.isEmpty(notifications)}">
+
+                <article th:each="notification : ${notifications}"
+                         th:class="|notification-card ${notification.read ? 'is-read' : 'is-unread'}|">
+
+                    <div class="notification-content">
+
+                        <span class="notification-type"
+                              th:text="${#strings.replace(notification.type.name(), '_', ' ')}">
+                        </span>
+
+                        <p th:text="${notification.message}"></p>
+
+                        <small th:text="${notification.createdAt}"></small>
 
                         <div class="notification-actions">
 
-                            <!-- MARK AS READ -->
                             <form th:if="${!notification.read}"
-                                  th:action="@{/notifications/{id}/read(
-                                      id=${notification.id}
-                                  )}"
+                                  th:action="@{/notifications/{id}/read(id=${notification.id})}"
                                   method="post">
-
-                                <button type="submit"
-                                        class="action-button read-button"
-                                        title="Mark as read">
-
-                                    <i class="fa-solid fa-check"></i>
-                                    Mark as Read
-
-                                </button>
-
+                                <button type="submit">Mark as Read</button>
                             </form>
 
-                            <!-- DELETE -->
-                            <form th:action="@{/notifications/{id}/delete(
-                                      id=${notification.id}
-                                  )}"
-                                  method="post"
-                                  class="delete-form">
-
-                                <button type="submit"
-                                        class="action-button delete-button"
-                                        title="Delete notification">
-
-                                    <i class="fa-regular fa-trash-can"></i>
-                                    Delete
-
-                                </button>
-
+                            <form th:action="@{/notifications/{id}/delete(id=${notification.id})}"
+                                  method="post">
+                                <button type="submit">Delete</button>
                             </form>
 
                         </div>
 
                     </div>
 
-                </div>
+                </article>
 
-            </article>
+            </section>
 
-        </section>
+            <section th:if="${#lists.isEmpty(notifications)}"
+                     class="empty-state">
 
-        <!-- FILTER EMPTY RESULT -->
-        <section class="empty-state filter-empty-state"
-                 id="filterEmptyState">
+                <i class="fa-regular fa-bell-slash"></i>
+                <h3>No system notifications</h3>
 
-            <div class="empty-icon">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
+            </section>
 
-            <h3>Notification not found</h3>
-
-            <p>
-                Try another keyword or filter.
-            </p>
-
-        </section>
+        </div>
 
     </main>
 
