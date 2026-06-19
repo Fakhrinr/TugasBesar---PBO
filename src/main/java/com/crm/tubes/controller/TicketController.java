@@ -32,31 +32,18 @@ public class TicketController {
                 HttpSession session
         ) {
 
-    UserModel user = authService.getLoggedUser(session);
-
-    model.addAttribute(
-            "loggedUser",
-            user
-    );
-
-    if ("CUSTOMER".equals(user.getRole().name())) {
-
         model.addAttribute(
-                "tickets",
-                ticketService.getTicketsByCustomerId(user.getId())
+                "loggedUser",
+                authService.getLoggedUser(session)
         );
-
-    } else {
 
         model.addAttribute(
                 "tickets",
                 ticketService.getAllTickets()
         );
 
-    }
-
-    return "tickets";
-}
+        return "tickets";
+        }
 
     @GetMapping("/create")
         public String createForm(
@@ -87,8 +74,9 @@ public class TicketController {
         if (user == null) {
             return "redirect:/login";
         }
+
         ticket.setCustomerId(user.getCustomerId());
-        
+
         ticketService.createTicket(ticket);
 
         return "redirect:/tickets";
