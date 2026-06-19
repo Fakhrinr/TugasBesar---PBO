@@ -151,4 +151,20 @@ public void updateStatus(
     );
 }
 
+public List<TicketModel> findByCustomerId(int customerId) {
+
+    String sql = """
+        SELECT *
+        FROM ticket
+        WHERE customer_id = ?
+        ORDER BY created_at DESC
+        """;
+
+    return jdbcTemplate.query(
+        sql,
+        ticketRowMapper,
+        customerId
+    );
+}
+
 }
