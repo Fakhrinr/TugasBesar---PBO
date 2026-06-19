@@ -199,7 +199,7 @@
                 <th>Total</th>
                 <th>Jatuh Tempo</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <!-- <th>Aksi</th> -->
               </tr>
             </thead>
             <tbody>
@@ -218,7 +218,7 @@
                     <!-- Bayar (jika belum PAID) -->
                     <form th:if="${inv.status?.name() != 'PAID'}"
                           th:action="@{/invoices/{id}/pay(id=${inv.id})}" method="post" style="display:inline">
-                      <button type="submit" class="btn btn-sm btn-success">Bayar</button>
+                      <!-- <button type="submit" class="btn btn-sm btn-success">Bayar</button> -->
                     </form>
                     <!-- Sudah lunas -->
                     <span th:if="${inv.status?.name() == 'PAID'}"
