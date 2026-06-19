@@ -10,42 +10,57 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
     <link rel="stylesheet" th:href="@{/css/customer/ticket.css}">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 </head>
 
 <body class="customer-shell ticket-shell">
-<aside class="customer-sidebar">
-    <div class="brand-block">
-        <span class="material-symbols-outlined brand-icon">router</span>
-        <div>
-            <h1>Bla Bla</h1>
-            <p>Customer Portal</p>
-        </div>
-    </div>
+<aside class="sidebar">
+    <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
 
-    <nav class="sidebar-nav" aria-label="Customer navigation">
-        <a class="nav-link" href="/customer/dashboard">
-            <span class="material-symbols-outlined">dashboard</span>
-            Dashboard
-        </a>
-        <a class="nav-link" href="/customer/services">
-            <span class="material-symbols-outlined">router</span>
-            My Services
-        </a>
-        <a class="nav-link" href="/customer/billing">
-            <span class="material-symbols-outlined">payments</span>
-            Billing
-        </a>
-        <a class="nav-link active" href="/customer/tickets">
-            <span class="material-symbols-outlined">confirmation_number</span>
-            Support Tickets
-        </a>
-        
-    </nav>
+    <!-- DASHBOARD -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/dashboard} : @{/dashboard}"
+       class="s-link"
+       title="Dashboard">
+        <i class="bi bi-grid"></i>
+    </a>
 
-    <div class="sidebar-footer">
-        <a class="upgrade-button" href="/customer/services">Upgrade Plan</a>
-    </div>
+    <!-- INVOICES -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/invoices} : @{/invoices}"
+       class="s-link"
+       title="Billing">
+        <i class="bi bi-receipt"></i>
+    </a>
+
+    <!-- SUBSCRIPTION -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/subscription} : @{/subscription}"
+       class="s-link"
+       title="Subscription">
+        <i class="bi bi-calendar-check"></i>
+    </a>
+
+    <!-- NOTIFICATION -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/notifications} : @{/notifications}"
+       class="s-link"
+       title="Notification">
+        <i class="bi bi-bell"></i>
+    </a>
+
+    <!-- TICKETS -->
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/tickets} : @{/tickets}"
+       class="s-link active"
+       title="Tickets">
+        <i class="bi bi-ticket-perforated"></i>
+    </a>
+
+    <hr/>
+
+    <a th:href="@{/logout}" class="s-link s-logout">
+        <i class="bi bi-box-arrow-right"></i>
+    </a>
 </aside>
+
 
 <main class="customer-main">
     <header class="top-app-bar">
@@ -98,15 +113,15 @@
         <section class="create-modal" aria-labelledby="create-ticket-title">
             <div class="create-modal-header">
                 <h2 id="create-ticket-title">Create New Ticket</h2>
-                <a class="modal-close" href="/customer/tickets" aria-label="Close">
+                <a class="modal-close" href="/tickets">
                     <span class="material-symbols-outlined">close</span>
                 </a>
             </div>
 
             <form class="ticket-create-form"
-                  th:action="@{/customer/tickets/create}"
-                  th:object="${ticket}"
-                  method="post">
+                th:action="@{/tickets/save}"
+                th:object="${ticket}"
+                 method="post">
 
                 <div class="field-group">
                     <label for="ticket-title">Ticket Title</label>
@@ -151,7 +166,7 @@
                 </div>
 
                 <div class="create-modal-footer">
-                    <a class="cancel-button" href="/customer/tickets">Cancel</a>
+                    <a class="cancel-button" href="/tickets">Cancel</a>
                     <button class="submit-ticket-button" type="submit">
                         Submit Ticket
                         <span class="material-symbols-outlined">send</span>

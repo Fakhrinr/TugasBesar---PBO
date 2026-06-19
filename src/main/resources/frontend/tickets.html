@@ -11,6 +11,8 @@
     <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
     <link rel="stylesheet" th:href="@{/css/customer/ticket.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body class="customer-shell ticket-shell">
@@ -40,14 +42,14 @@
 
     <!-- NOTIFICATION -->
     <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/notifications} : @{/notifications}"
-       class="s-link active"
+       class="s-link"
        title="Notification">
         <i class="bi bi-bell"></i>
     </a>
 
     <!-- TICKETS -->
     <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/tickets} : @{/tickets}"
-       class="s-link"
+       class="s-link active"
        title="Tickets">
         <i class="bi bi-ticket-perforated"></i>
     </a>
@@ -61,21 +63,7 @@
 
 <main class="customer-main">
     <header class="top-app-bar">
-        <!-- <div class="search-box">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" placeholder="Search..." aria-label="Search tickets">
-        </div> -->
-
         <div class="top-actions">
-            <!-- <button type="button" class="icon-button" aria-label="Notifications">
-                <span class="material-symbols-outlined">notifications</span>
-            </button>
-            <button type="button" class="icon-button" aria-label="Help">
-                <span class="material-symbols-outlined">help</span>
-            </button>
-            <button type="button" class="icon-button" aria-label="Settings">
-                <span class="material-symbols-outlined">settings</span>
-            </button> -->
             <div class="avatar" aria-hidden="true">
                 <span>C</span>
             </div>

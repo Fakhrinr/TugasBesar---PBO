@@ -27,7 +27,7 @@
         <a th:href="@{/billing}"      class="s-link active"        title="Billing">      <i class="bi bi-receipt"></i></a>
         <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
         <a th:href="@{/notifications}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
-        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <a th:href="@{/tickets}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
         <hr/>
         <a th:href="@{/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
     </aside>
@@ -50,9 +50,6 @@
 
             <div class="header-actions">
 
-                <button class="icon-btn">
-                    <i class="fa-regular fa-bell"></i>
-                </button>
 
                 <img th:src="'https://ui-avatars.com/api/?name=' + ${loggedUser.name} + '&background=5B4FF7&color=ffffff'"
                      class="profile"

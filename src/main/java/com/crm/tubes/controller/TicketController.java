@@ -45,7 +45,15 @@ public class TicketController {
         }
 
     @GetMapping("/create")
-    public String createForm(Model model) {
+        public String createForm(
+                Model model,
+                HttpSession session
+        ) {
+
+        model.addAttribute(
+                "loggedUser",
+                authService.getLoggedUser(session)
+        );
 
         model.addAttribute(
                 "ticket",
@@ -53,7 +61,7 @@ public class TicketController {
         );
 
         return "ticket-create";
-    }
+        }
 
     @PostMapping("/save")
     public String saveTicket(
