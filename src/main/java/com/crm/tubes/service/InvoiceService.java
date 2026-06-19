@@ -1,11 +1,13 @@
 package com.crm.tubes.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.crm.tubes.model.Invoice;
 import com.crm.tubes.model.InvoiceStatus;
 import com.crm.tubes.repository.InvoiceRepository;
-import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class InvoiceService {
@@ -26,7 +28,23 @@ public class InvoiceService {
      */
     public void createInvoice(Invoice invoice) {
         invoice.generateInvoice();
-        invoiceRepository.save(invoice);
+         Integer invoiceId = invoiceRepository.save(invoice);
+        if (invoiceId != null) {
+            invoice.setId(invoiceId);
+        }
+
+        if (invoice.getSubscription() != null
+                && invoice.getSubscription().getCustomer() != null
+                && invoice.getSubscription().getCustomer().getId() != null
+                && invoice.getTotalAmount() != null
+                && invoice.getDueDate() != null) {
+            notificationService.notifyInvoiceCreated(
+                    invoice.getSubscription().getCustomer().getId(),
+                    invoice.getId(),
+                    invoice.getTotalAmount(),
+                    invoice.getDueDate()
+            );
+        }
     }
 
     /**

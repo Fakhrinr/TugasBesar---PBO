@@ -108,6 +108,14 @@ public class UserRepository {
             rs -> rs.next() ? rs.getInt("id") : null,
             userId);
     }
+    /** Returns user.id for a given customer.id, or null if the customer is missing. */
+    public Integer findUserIdByCustomerId(Integer customerId) {
+
+        return jdbcTemplate.query(
+            "SELECT user_id FROM customer WHERE id = ?",
+            rs -> rs.next() ? rs.getInt("user_id") : null,
+            customerId);
+    }
 
     // ── UPDATE ───────────────────────────────────────────────
 

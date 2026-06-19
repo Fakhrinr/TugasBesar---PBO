@@ -1,9 +1,13 @@
 package com.crm.tubes.repository;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.crm.tubes.model.CustomerModel;
@@ -24,7 +28,7 @@ public class InvoiceRepository {
     /**
      * Save new invoice
      */
-    public void save(Invoice invoice) {
+    public Integer save(Invoice invoice) {
 
         String sql = """
                 INSERT INTO invoice
@@ -39,15 +43,26 @@ public class InvoiceRepository {
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        jdbcTemplate.update(
-                sql,
-                invoice.getSubscription().getId(),
-                Date.valueOf(invoice.getIssueDate()),
-                Date.valueOf(invoice.getDueDate()),
-                invoice.getTotalAmount(),
-                invoice.getLateFeeAmount(),
-                invoice.getStatus().name()
-        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+            statement.setInt(1, invoice.getSubscription().getId());
+            statement.setDate(2, Date.valueOf(invoice.getIssueDate()));
+            statement.setDate(3, Date.valueOf(invoice.getDueDate()));
+            statement.setBigDecimal(4, invoice.getTotalAmount());
+            statement.setBigDecimal(5, invoice.getLateFeeAmount());
+            statement.setString(6, invoice.getStatus().name());
+
+            return statement;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+        return key == null ? null : key.intValue();
     }
 
     /**
