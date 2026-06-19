@@ -205,7 +205,7 @@ CREATE TABLE ticket (
         ON DELETE CASCADE,
 
     CONSTRAINT fk_ticket_technician
-        FOREIGN KEY (technician_id) REFERENCES staff(id)
+        FOREIGN KEY (technician_id) REFERENCES user(id)
         ON DELETE SET NULL                             -- teknisi dihapus → ticket tetap ada
 );
 
@@ -262,6 +262,15 @@ INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fe
 INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
 (2, '2026-06-01', '2026-06-15', 59.99, 0, 'PAID');
 
+-- Sample tickets
+-- customer_id  = customer.id (bukan user.id): Larry=1, Diana=2
+-- technician_id = user.id: Andi Teknisi = 4
+INSERT INTO ticket (customer_id, technician_id, title, description, priority, status) VALUES
+(1, 4, 'Internet mati total',        'Koneksi putus sejak tadi malam, tidak bisa terhubung sama sekali.',   'HIGH',   'OPEN'),
+(1, 4, 'Speed sangat lambat',        'Download speed turun drastis dari 50mbps jadi 2mbps.',                'MEDIUM', 'IN_PROGRESS'),
+(2, 4, 'Router tidak bisa connect',  'Lampu WAN di router berkedip terus, tidak ada koneksi.',              'HIGH',   'IN_PROGRESS'),
+(2, 4, 'Tagihan tidak sesuai',       'Tagihan bulan ini berbeda dari biasanya, mohon dicek.',               'LOW',    'RESOLVED'),
+(1, 4, 'Gangguan intermittent',      'Koneksi sering putus-putus setiap beberapa menit.',                   'URGENT', 'OPEN');
 INSERT INTO invoice(subscription_id, issue_date, due_date, total_amount, late_fee_amount, status)VALUES
 (3, '2026-06-10', '2026-06-25', 129.99, 0, 'OPEN');
 

@@ -21,10 +21,10 @@
   <aside class="sidebar">
         <div class="s-brand"><i class="bi bi-grid-fill"></i></div>
         <a th:href="@{/dashboard}"    class="s-link active"        title="Dashboard">    <i class="bi bi-grid"></i></a>
-        <a th:href="@{/invoices}"      class="s-link"        title="Billing">      <i class="bi bi-receipt"></i></a>
+        
         <a th:href="@{/subscription}" class="s-link" title="Subscription"> <i class="bi bi-calendar-check"></i></a>
         <a th:href="@{/notifications}" class="s-link"        title="Notification"> <i class="bi bi-bell"></i></a>
-        <a th:href="@{/ticket}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
+        <a th:href="@{/technician/my-tickets}"       class="s-link"        title="Tickets">      <i class="bi bi-ticket-perforated"></i></a>
         <hr/>
         <a th:href="@{/logout}"  class="s-link s-logout" title="Logout">     <i class="bi bi-box-arrow-right"></i></a>
     </aside>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="topbar-right">
-        <a th:href="@{/notifications/user/{id}(id=${user?.id})}" class="btn-icon">
+        <a th:href="@{/notifications}" class="btn-icon">
           <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zM10 18a3 3 0 0 1-3-3h6a3 3 0 0 1-3 3z"/></svg>
           <span class="notif-dot"></span>
         </a>

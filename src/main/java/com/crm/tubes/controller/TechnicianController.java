@@ -11,120 +11,95 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.crm.tubes.model.TicketModel;
+import com.crm.tubes.model.UserModel;
+import com.crm.tubes.service.AuthService;
+import com.crm.tubes.service.DashboardService;
 import com.crm.tubes.service.TicketService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/technician")
 public class TechnicianController {
 
-@Autowired
-private TicketService ticketService;
+    @Autowired
+    private TicketService ticketService;
 
-/*
- * SEMENTARA
- * nanti ganti dari session/login
- */
-private final int TECHNICIAN_ID = 1;
+    @Autowired
+    private DashboardService dashboardService;
 
-/*
- * DASHBOARD
- */
-@GetMapping("/dashboard")
-public String dashboard(Model model) {
+    @Autowired
+    private AuthService authService;
 
-    List<TicketModel> tickets =
-            ticketService
-                    .getTicketsByTechnicianId(TECHNICIAN_ID);
+    /*
+     * DASHBOARD
+     * Sebenernya sudah dihandle DashboardController,
+     * ini fallback kalau ada yang akses /technician/dashboard langsung
+     */
+    @GetMapping("/dashboard")
+    public String dashboard(HttpSession session, Model model) {
+        UserModel user = authService.getLoggedUser(session);
+        if (user == null) return "redirect:/login";
 
-    model.addAttribute(
-            "assignedTicketCount",
-            tickets.size()
-    );
+        model.addAttribute("user", user);
+        model.addAttribute("data", dashboardService.getTeknisiData(user));
+        return "dashboard/teknisi";
+    }
 
-    model.addAttribute(
-            "inProgressCount",
-            tickets.stream()
-                    .filter(t ->
-                            "IN_PROGRESS".equals(t.getStatus()))
-                    .count()
-    );
+    /*
+     * MY TICKETS
+     */
+    @GetMapping("/my-tickets")
+    public String myTickets(HttpSession session, Model model) {
+        UserModel user = authService.getLoggedUser(session);
+        if (user == null) return "redirect:/login";
 
-    model.addAttribute(
-            "resolvedCount",
-            tickets.stream()
-                    .filter(t ->
-                            "RESOLVED".equals(t.getStatus()))
-                    .count()
-    );
+        model.addAttribute("user", user);
+        model.addAttribute(
+                "tickets",
+                ticketService.getTicketsByTechnicianId(user.getId())
+        );
+        return "my-tickets";
+    }
 
-    model.addAttribute(
-            "recentTickets",
-            tickets
-    );
+    /*
+     * TICKET DETAIL
+     */
+    @GetMapping("/my-tickets/{id:[0-9]+}")
+    public String ticketDetail(
+            @PathVariable int id,
+            HttpSession session,
+            Model model
+    ) {
+        UserModel user = authService.getLoggedUser(session);
+        if (user == null) return "redirect:/login";
 
-    return "technician/dashboard";
-}
+        model.addAttribute("user", user);
+        model.addAttribute("ticket", ticketService.getTicketById(id));
+        return "ticket-detail";
+    }
 
-/*
- * MY TICKETS
- */
-@GetMapping("/my-tickets")
-public String myTickets(Model model) {
+    @PostMapping("/my-tickets/{id:[0-9]+}/start")
+    public String startTicket(
+            @PathVariable int id,
+            HttpSession session
+    ) {
+        UserModel user = authService.getLoggedUser(session);
+        if (user == null) return "redirect:/login";
 
-    List<TicketModel> tickets =
-            ticketService
-                    .getTicketsByTechnicianId(TECHNICIAN_ID);
+        ticketService.assignTechnician(id, user.getId());
+        return "redirect:/technician/my-tickets/" + id;
+    }
 
-    model.addAttribute(
-            "tickets",
-            tickets
-    );
+    @PostMapping("/my-tickets/{id:[0-9]+}/resolve")
+    public String resolveTicket(
+            @PathVariable int id,
+            HttpSession session
+    ) {
+        UserModel user = authService.getLoggedUser(session);
+        if (user == null) return "redirect:/login";
 
-    return "technician/my-tickets";
-}
-
-/*
- * TICKET DETAIL
- */
-@GetMapping("/my-tickets/{id:[0-9]+}")
-public String ticketDetail(
-        @PathVariable int id,
-        Model model
-) {
-
-    TicketModel ticket =
-            ticketService
-                    .getTicketById(id);
-
-    model.addAttribute(
-            "ticket",
-            ticket
-    );
-
-    return "technician/ticket-detail";
-}
-
-@PostMapping("/my-tickets/{id:[0-9]+}/start")
-public String startTicket(
-        @PathVariable int id
-) {
-
-    ticketService.assignTechnician(
-            id,
-            TECHNICIAN_ID
-    );
-
-    return "redirect:/technician/my-tickets/" + id;
-}
-
-@PostMapping("/my-tickets/{id:[0-9]+}/resolve")
-public String resolveTicket(
-        @PathVariable int id
-) {
-
-    ticketService.resolveTicket(id);
-
-    return "redirect:/technician/my-tickets/" + id;
-}
-
+        ticketService.resolveTicket(id);
+        return "redirect:/technician/my-tickets/" + id;
+    }
 }
