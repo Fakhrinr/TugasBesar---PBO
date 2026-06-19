@@ -153,6 +153,21 @@
                         <p th:text="${notification.message}"></p>
 
                         <small th:text="${notification.createdAt}"></small>
+                        <div class="notification-actions">
+
+                            <form th:if="${!notification.read}"
+                                  th:action="@{/notifications/{id}/read(id=${notification.id})}"
+                                  method="post">
+                                <button type="submit">Mark as Read</button>
+                            </form>
+
+                            <form class="delete-form"
+                                  th:action="@{/notifications/{id}/delete(id=${notification.id})}"
+                                  method="post">
+                                <button type="submit">Delete</button>
+                            </form>
+
+                        </div>
 
                     </div>
 

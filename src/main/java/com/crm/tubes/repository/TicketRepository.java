@@ -1,10 +1,14 @@
 package com.crm.tubes.repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.crm.tubes.model.TicketModel;
@@ -61,7 +65,7 @@ public class TicketRepository {
     );
 }
 
-    public void save(TicketModel ticket) {
+    public Integer save(TicketModel ticket) {
 
         String sql =
                 """
@@ -70,15 +74,32 @@ public class TicketRepository {
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        jdbcTemplate.update(
-                sql,
-                ticket.getCustomerId(),
-                ticket.getTechnicianId(),
-                ticket.getTitle(),
-                ticket.getDescription(),
-                ticket.getPriority(),
-                ticket.getStatus()
-        );
+       KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+            statement.setInt(1, ticket.getCustomerId());
+
+            if (ticket.getTechnicianId() == null) {
+                statement.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(2, ticket.getTechnicianId());
+            }
+
+            statement.setString(3, ticket.getTitle());
+            statement.setString(4, ticket.getDescription());
+            statement.setString(5, ticket.getPriority());
+            statement.setString(6, ticket.getStatus());
+
+            return statement;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+        return key == null ? null : key.intValue();
     }
 
     public void update(TicketModel ticket) {

@@ -71,9 +71,11 @@ public class TicketController {
         ) {
 
         UserModel user = authService.getLoggedUser(session);
-
-        ticket.setCustomerId(user.getId());
-
+        if (user == null) {
+            return "redirect:/login";
+        }
+        ticket.setCustomerId(user.getCustomerId());
+        
         ticketService.createTicket(ticket);
 
         return "redirect:/tickets";
