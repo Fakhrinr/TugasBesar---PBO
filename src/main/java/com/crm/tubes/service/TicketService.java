@@ -79,4 +79,8 @@ public class TicketService {
 
         ticketRepository.update(ticket);
     }
+
+    public List<TicketModel> getTicketsByCustomerId(int customerId) {
+    return ticketRepository.findByCustomerId(customerId);
+}
 }
