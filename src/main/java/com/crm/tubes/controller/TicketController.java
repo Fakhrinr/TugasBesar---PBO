@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.crm.tubes.model.TicketModel;
+import com.crm.tubes.model.UserModel;
 import com.crm.tubes.service.AuthService;
 import com.crm.tubes.service.TicketService;
 
@@ -64,14 +65,19 @@ public class TicketController {
         }
 
     @PostMapping("/save")
-    public String saveTicket(
-            @ModelAttribute TicketModel ticket
-    ) {
+        public String saveTicket(
+                @ModelAttribute TicketModel ticket,
+                HttpSession session
+        ) {
+
+        UserModel user = authService.getLoggedUser(session);
+
+        ticket.setCustomerId(user.getId());
 
         ticketService.createTicket(ticket);
 
         return "redirect:/tickets";
-    }
+        }
 
     @GetMapping("/edit/{id}")
     public String editForm(

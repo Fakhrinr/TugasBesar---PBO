@@ -36,6 +36,11 @@ public class TicketService {
             ticket.setPriority("MEDIUM");
         }
 
+        // sementara untuk demo
+        if (ticket.getTechnicianId() == null) {
+            ticket.setTechnicianId(4);
+        }
+
         ticketRepository.save(ticket);
     }
 
