@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.crm.tubes.model.TicketModel;
+import com.crm.tubes.service.AuthService;
 import com.crm.tubes.service.TicketService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -20,17 +22,27 @@ import lombok.RequiredArgsConstructor;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final AuthService authService;
+
 
     @GetMapping
-    public String getAllTickets(Model model) {
+        public String getAllTickets(
+                Model model,
+                HttpSession session
+        ) {
+
+        model.addAttribute(
+                "loggedUser",
+                authService.getLoggedUser(session)
+        );
 
         model.addAttribute(
                 "tickets",
                 ticketService.getAllTickets()
         );
 
-        return "customer/ticket-list";
-    }
+        return "tickets";
+        }
 
     @GetMapping("/create")
     public String createForm(Model model) {
@@ -40,7 +52,7 @@ public class TicketController {
                 new TicketModel()
         );
 
-        return "ticket-form";
+        return "ticket-create";
     }
 
     @PostMapping("/save")
@@ -64,7 +76,7 @@ public class TicketController {
                 ticketService.getTicketById(id)
         );
 
-        return "ticket-form";
+        return "ticket-create";
     }
 
     @PostMapping("/update")

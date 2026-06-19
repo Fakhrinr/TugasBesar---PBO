@@ -231,7 +231,7 @@ public String ticketList(Model model) {
                     .count()
     );
 
-    return "customer/ticket-list";
+    return "tickets";
 }
 
 /*

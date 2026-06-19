@@ -60,7 +60,7 @@
     </a>
 
     <!-- TICKETS -->
-    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/customer/tickets} : @{/tickets}"
+    <a th:href="${loggedUser.role.name() == 'CUSTOMER'} ? @{/tickets} : @{/tickets}"
        class="s-link"
        title="Tickets">
         <i class="bi bi-ticket-perforated"></i>

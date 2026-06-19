@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Ticket - ProNet Fiber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/customer/customer-base.css}">
+    <link rel="stylesheet" th:href="@{/css/customer/ticket.css}">
+</head>
+
+<body class="customer-shell ticket-shell">
+<aside class="customer-sidebar">
+    <div class="brand-block">
+        <span class="material-symbols-outlined brand-icon">router</span>
+        <div>
+            <h1>Bla Bla</h1>
+            <p>Customer Portal</p>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Customer navigation">
+        <a class="nav-link" href="/customer/dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+        <a class="nav-link" href="/customer/services">
+            <span class="material-symbols-outlined">router</span>
+            My Services
+        </a>
+        <a class="nav-link" href="/customer/billing">
+            <span class="material-symbols-outlined">payments</span>
+            Billing
+        </a>
+        <a class="nav-link active" href="/customer/tickets">
+            <span class="material-symbols-outlined">confirmation_number</span>
+            Support Tickets
+        </a>
+        
+    </nav>
+
+    <div class="sidebar-footer">
+        <a class="upgrade-button" href="/customer/services">Upgrade Plan</a>
+    </div>
+</aside>
+
+<main class="customer-main">
+    <header class="top-app-bar">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search tickets">
+        </div>
+
+        <div class="top-actions">
+            <button type="button" class="icon-button" aria-label="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Help">
+                <span class="material-symbols-outlined">help</span>
+            </button>
+            <button type="button" class="icon-button" aria-label="Settings">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="avatar" aria-hidden="true">
+                <span>C</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="ticket-create-page">
+        <section class="create-backdrop" aria-hidden="true">
+            <div class="create-preview">
+                <div>
+                    <h2>My Support Tickets</h2>
+                    <p>Manage and track your service requests.</p>
+                </div>
+                <div class="preview-summary">
+                    <article>
+                        <strong>3</strong>
+                        <span>Open Tickets</span>
+                    </article>
+                    <article>
+                        <strong>1</strong>
+                        <span>Pending Reply</span>
+                    </article>
+                    <article>
+                        <strong>12</strong>
+                        <span>Resolved</span>
+                    </article>
+                </div>
+                <div class="preview-table">[ Ticket List Data ]</div>
+            </div>
+        </section>
+
+        <section class="create-modal" aria-labelledby="create-ticket-title">
+            <div class="create-modal-header">
+                <h2 id="create-ticket-title">Create New Ticket</h2>
+                <a class="modal-close" href="/customer/tickets" aria-label="Close">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </div>
+
+            <form class="ticket-create-form"
+                  th:action="@{/customer/tickets/create}"
+                  th:object="${ticket}"
+                  method="post">
+
+                <div class="field-group">
+                    <label for="ticket-title">Ticket Title</label>
+                    <input id="ticket-title"
+                           type="text"
+                           th:field="*{title}"
+                           required
+                           placeholder="e.g., Internet disconnected randomly">
+                    <p class="field-error" th:if="${titleError}" th:text="${titleError}">Ticket title is required</p>
+                </div>
+
+                <div class="field-group">
+                    <label for="ticket-priority">Priority</label>
+                    <div class="select-wrap">
+                        <select id="ticket-priority" th:field="*{priority}">
+                            <option value="LOW">Low - General Inquiry</option>
+                            <option value="MEDIUM">Medium - Degraded Service</option>
+                            <option value="HIGH">High - Complete Outage</option>
+                            <option value="URGENT">Urgent - Critical Issue</option>
+                        </select>
+                        <span class="material-symbols-outlined">arrow_drop_down</span>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="ticket-description">Description</label>
+                    <textarea id="ticket-description"
+                              th:field="*{description}"
+                              required
+                              rows="5"
+                              placeholder="Please describe the issue in detail..."></textarea>
+                    <p class="field-error" th:if="${descriptionError}" th:text="${descriptionError}">Description is required</p>
+                </div>
+
+                <div class="field-group">
+                    <label>Attachments (Optional)</label>
+                    <div class="upload-placeholder">
+                        <span class="material-symbols-outlined">upload_file</span>
+                        <strong>Click to upload or drag and drop</strong>
+                        <small>PNG, JPG, PDF up to 10MB</small>
+                    </div>
+                </div>
+
+                <div class="create-modal-footer">
+                    <a class="cancel-button" href="/customer/tickets">Cancel</a>
+                    <button class="submit-ticket-button" type="submit">
+                        Submit Ticket
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+</html>
