@@ -115,18 +115,42 @@ public class InvoiceController {
         return "redirect:/invoices";
     }
 
+   
     /**
-     * Mark invoice as paid
-     * Hanya Admin
+     * Pay / mark as paidinvoice
      */
     @PostMapping("/{id}/pay")
-    public String markAsPaid(@PathVariable int id, HttpSession session) {
+    public String markAsPaid(@PathVariable int id,
+                            HttpSession session) {
 
         UserModel loggedUser = getLoggedUser(session);
-        if (loggedUser == null) return "redirect:/login";
-        if (!isAdmin(loggedUser)) return "redirect:/unauthorized";
+
+        if (loggedUser == null) {
+            return "redirect:/login";
+        }
+
+        Invoice invoice = invoiceService.getInvoiceById(id);
+
+        // Jika customer, pastikan invoice miliknya sendiri
+        if (isCustomer(loggedUser)) {
+
+            int ownerCustomerId =
+                    invoice.getSubscription()
+                        .getCustomer()
+                        .getCustomerId();
+
+            if (ownerCustomerId != loggedUser.getCustomerId()) {
+                return "redirect:/unauthorized";
+            }
+        }
+
+        // Teknisi tidak boleh
+        if (!isAdmin(loggedUser) && !isCustomer(loggedUser)) {
+            return "redirect:/unauthorized";
+        }
 
         invoiceService.markAsPaid(id);
+
         return "redirect:/invoices/" + id;
     }
 

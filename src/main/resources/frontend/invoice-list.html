@@ -162,7 +162,7 @@
                     <th>Issue Date</th>
                     <th>Due Date</th>
                     <!-- Kolom Action hanya untuk Admin -->
-                    <th th:if="${loggedUser.role.name() == 'ADMIN'}">Action</th>
+                    <th th:if="${loggedUser.role.name() == 'ADMIN' || loggedUser.role.name() == 'CUSTOMER'}">Action</th>
                 </tr>
                 </thead>
 
@@ -222,12 +222,37 @@
                     <!-- DUE DATE -->
                     <td th:text="${invoice.dueDate}"></td>
 
-                    <!-- ACTION — hanya untuk Admin -->
+                    <!-- ACTION ADMIN -->
                     <td th:if="${loggedUser.role.name() == 'ADMIN'}">
+
                         <a th:href="@{/invoices/{id}(id=${invoice.id})}"
-                           class="view-btn">
+                        class="view-btn">
                             <i class="fa-solid fa-eye"></i>
                         </a>
+
+                    </td>
+
+                    <!-- ACTION CUSTOMER -->
+                    <td th:if="${loggedUser.role.name() == 'CUSTOMER'}">
+
+                        <!-- Jika invoice belum PAID -->
+                        <form th:if="${invoice.status.name() != 'PAID'}"
+                            th:action="@{/invoices/{id}/pay(id=${invoice.id})}"
+                            method="post">
+
+                            <button type="submit" class="pay-btn">
+                                <i class="fa-solid fa-credit-card"></i>
+                                Pay
+                            </button>
+
+                        </form>
+
+                        <!-- Jika invoice sudah PAID -->
+                        <span th:if="${invoice.status.name() == 'PAID'}"
+                            class="paid-badge">
+                            Paid
+                        </span>
+
                     </td>
 
                 </tr>

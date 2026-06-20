@@ -2,7 +2,6 @@ package com.crm.tubes.repository;
 
 import com.crm.tubes.model.Invoice;
 import com.crm.tubes.model.Payment;
-import com.crm.tubes.model.PaymentStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -28,18 +27,16 @@ public class PaymentRepository {
                 (
                     invoice_id,
                     payment_date,
-                    amount,
-                    status
+                    amount
                 )
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?)
                 """;
 
         jdbcTemplate.update(
                 sql,
                 payment.getInvoice().getId(),
                 Date.valueOf(payment.getPaymentDate()),
-                payment.getAmount(),
-                payment.getStatus().name()
+                payment.getAmount()
         );
     }
 
@@ -80,12 +77,6 @@ public class PaymentRepository {
 
                     payment.setAmount(
                             rs.getBigDecimal("amount")
-                    );
-
-                    payment.setStatus(
-                            PaymentStatus.valueOf(
-                                    rs.getString("status")
-                            )
                     );
 
                     return payment;
@@ -133,12 +124,6 @@ public class PaymentRepository {
 
                     payment.setAmount(
                             rs.getBigDecimal("amount")
-                    );
-
-                    payment.setStatus(
-                            PaymentStatus.valueOf(
-                                    rs.getString("status")
-                            )
                     );
 
                     return payment;

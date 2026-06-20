@@ -26,17 +26,24 @@ public class PaymentService {
      */
     public void processPayment(Payment payment) {
 
-        payment.processPayment();
-
-        paymentRepository.save(payment);
-
-        if (payment.verifyStatus()) {
-
-            invoiceRepository.updateStatus(
-                    payment.getInvoice().getId(),
-                    InvoiceStatus.PAID
+        // Invoice sudah dibayar
+        if (!payment.verifyStatus()) {
+            throw new IllegalStateException(
+                    "Invoice sudah dibayar"
             );
         }
+
+        // Ubah status invoice menjadi PAID
+        payment.processPayment();
+
+        // Simpan riwayat pembayaran
+        paymentRepository.save(payment);
+
+        // Update status invoice di database
+        invoiceRepository.updateStatus(
+                payment.getInvoice().getId(),
+                InvoiceStatus.PAID
+        );
     }
 
     /**

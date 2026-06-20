@@ -1,7 +1,7 @@
 package com.crm.tubes.repository;
 
-import java.util.List;
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +22,8 @@ public class SubscriptionRepository {
     private final RowMapper<Subscription> subscriptionRowMapper = (rs, rowNum) -> {
 
         CustomerModel customer = new CustomerModel();
-        customer.setId(rs.getInt("customer_id"));
+        customer.setId(rs.getInt("user_id"));
+        customer.setCustomerId(rs.getInt("customer_id"));
         customer.setName(rs.getString("customer_name"));
         customer.setPhone(rs.getString("phone"));
         customer.setAddress(rs.getString("address"));
@@ -48,6 +49,7 @@ public class SubscriptionRepository {
                 s.monthly_fee,
                 s.status,
                 c.id       AS customer_id,
+                c.user_id  AS user_id,
                 u.name     AS customer_name,
                 c.phone,
                 c.address

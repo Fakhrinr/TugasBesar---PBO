@@ -39,6 +39,11 @@ public class SubscriptionService {
                     sub.getId(),
                     sub.getStatus()
                 );
+                notificationService.notifySubscriptionStatus(
+                    sub.getCustomer().getId(),
+                    sub.getPlanName(),
+                    sub.getStatus().name()
+                );
 
                 if (sub.getStatus() == SubscriptionStatus.GRACE ||
                     sub.getStatus() == SubscriptionStatus.SUSPENDED) {
@@ -71,6 +76,11 @@ public class SubscriptionService {
                     sub.getId(),
                     sub.getStatus()
                 );
+                notificationService.notifySubscriptionStatus(
+                    sub.getCustomer().getId(),
+                    sub.getPlanName(),
+                    sub.getStatus().name()
+                );
 
 
                 if (sub.getStatus() == SubscriptionStatus.GRACE ||
@@ -102,6 +112,11 @@ public class SubscriptionService {
             subscriptionRepository.updateStatus(
                 sub.getId(),
                 sub.getStatus()
+            );
+            notificationService.notifySubscriptionStatus(
+                sub.getCustomer().getId(),
+                sub.getPlanName(),
+                sub.getStatus().name()
             );
 
 
@@ -162,9 +177,17 @@ public class SubscriptionService {
             BigDecimal.ZERO
         );
         invoice.generateInvoice();
+        Integer invoiceId = invoiceRepository.save(invoice);
+        if (invoiceId != null) {
+            invoice.setId(invoiceId);
 
-
-        invoiceRepository.save(invoice);
+            notificationService.notifyInvoiceCreated(
+                sub.getCustomer().getId(),
+                invoiceId,
+                invoice.getTotalAmount(),
+                invoice.getDueDate()
+            );
+        }
     }
 
 }
