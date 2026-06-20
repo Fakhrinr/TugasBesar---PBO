@@ -120,5 +120,9 @@ public class TicketService {
                 status
         );
     }
+
+     public List<TicketModel> getTicketsByCustomerId(int customerId) {
+    return ticketRepository.findByCustomerId(customerId);
+}
     
 }
