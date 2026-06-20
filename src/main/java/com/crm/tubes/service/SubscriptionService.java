@@ -118,7 +118,6 @@ public class SubscriptionService {
 
 
 
-    // Dipanggil ketika invoice sudah dibayar
     public void activateSubscription(Integer subscriptionId) {
 
 
@@ -131,10 +130,8 @@ public class SubscriptionService {
 
         sub.setStatus(SubscriptionStatus.ACTIVE);
 
-        // mulai dari tanggal bayar
         sub.setStartDate(today);
 
-        // aktif 1 bulan dari tanggal bayar
         sub.setEndDate(today.plusMonths(1));
 
 
@@ -161,13 +158,9 @@ public class SubscriptionService {
         invoice.setTotalAmount(
             BigDecimal.valueOf(sub.getMonthlyFee())
         );
-
-
         invoice.setLateFeeAmount(
             BigDecimal.ZERO
         );
-
-
         invoice.generateInvoice();
 
 
